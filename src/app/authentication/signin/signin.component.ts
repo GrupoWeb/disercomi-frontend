@@ -42,8 +42,8 @@ export class SigninComponent
 
   ngOnInit() {
     this.authForm = this.formBuilder.group({
-      username: ['admin@software.com', Validators.required],
-      password: ['admin@123', Validators.required],
+      username: ['', Validators.required],
+      password: ['', Validators.required],
     });
   }
   get f() {
@@ -68,10 +68,10 @@ export class SigninComponent
                   this.router.navigate(['/dashboard/dashboard1']);
                 }
               } else {
-                this.error = 'Invalid Login';
+                this.error = 'Ingreso invalido';
               }
             } else {
-              this.error = 'Invalid Login';
+              this.error = 'Ingreso invalido';
             }
           },
           error: (error) => {

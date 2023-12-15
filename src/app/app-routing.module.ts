@@ -4,6 +4,7 @@ import { Page404Component } from './authentication/page404/page404.component';
 import { AuthGuard } from './core/guard/auth.guard';
 import { AuthLayoutComponent } from './layout/app-layout/auth-layout/auth-layout.component';
 import { MainLayoutComponent } from './layout/app-layout/main-layout/main-layout.component';
+import {DisercomiModule} from "./disercomi/disercomi.module";
 const routes: Routes = [
   {
     path: '',
@@ -83,10 +84,10 @@ const routes: Routes = [
           import('./icons/icons.module').then((m) => m.IconsModule),
       },
       {
-        path: 'extra-pages',
+        path: 'disercomi',
         loadChildren: () =>
-          import('./extra-pages/extra-pages.module').then(
-            (m) => m.ExtraPagesModule
+          import('./disercomi/disercomi.module').then(
+            (m) => m.DisercomiModule
           ),
       },
       {

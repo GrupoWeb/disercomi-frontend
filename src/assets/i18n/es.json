@@ -1,4 +1,32 @@
 {
+  "DISERCOMI": {
+    "MENU": {
+      "MAIN": {
+        "TEXT": "Principal"
+      }
+    },
+    "PROFILE": {
+      "TEXT": "Perfil"
+    },
+    "DOCUMENTS": {
+      "TEXT": "Documentos"
+    },
+    "REQUESTS": {
+      "TEXT": "Solicitudes",
+      "LIST": {
+        "CARRY-OUT": "Realizar",
+        "RECORD": "Historial",
+        "REASSIGN": "Reasignar"
+      }
+    },
+    "RATINGS": {
+      "TEXT": "Calificaciones",
+      "LIST": {
+        "RECORD": "Historial"
+      }
+    }
+  },
+
   "HEADER":{
     "SEARCH": {
       "TEXT": "Buscar.."

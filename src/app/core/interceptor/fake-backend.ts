@@ -9,7 +9,7 @@ import {
 } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-import { User } from '../models/user';
+import { User } from '@core';
 
 const users: User[] = [
   {
@@ -20,6 +20,12 @@ const users: User[] = [
     firstName: 'Sarah',
     lastName: 'Smith',
     token: 'admin-token',
+    idUsuario: 0,
+    nombre: '',
+    correo: '',
+    nit: '',
+    fechaHoraAcceso: '',
+    idRol: '',
   },
 ];
 

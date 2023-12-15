@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8082/disercomi-api/',
+  apiUrl: 'http://localhost:8082/disercomi-api',
   seguridad: false,
   version: '1.0.0',
   recaptcha: {

@@ -6,4 +6,10 @@ export class User {
   firstName!: string;
   lastName!: string;
   token!: string;
+  idUsuario!: number;
+  nombre!: string;
+  correo!: string;
+  nit!: string;
+  fechaHoraAcceso!: string;
+  idRol!: string
 }
