@@ -7,6 +7,7 @@ import { Event, Router, NavigationStart, NavigationEnd } from '@angular/router';
 })
 export class AppComponent {
   currentUrl!: string;
+  title!: string;
   constructor(public _router: Router) {
     this._router.events.subscribe((routerEvent: Event) => {
       if (routerEvent instanceof NavigationStart) {

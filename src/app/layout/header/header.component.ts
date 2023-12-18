@@ -12,8 +12,9 @@ import { UnsubscribeOnDestroyAdapter } from '@shared';
 import { InConfiguration, AuthService, LanguageService } from '@core';
 import { NgScrollbar } from 'ngx-scrollbar';
 import { MatMenuModule } from '@angular/material/menu';
-import { FeatherIconsComponent } from '../../shared/components/feather-icons/feather-icons.component';
+import { FeatherIconsComponent } from '@shared/components/feather-icons/feather-icons.component';
 import { MatButtonModule } from '@angular/material/button';
+import { User } from '@core/models/user'
 
 interface Notifications {
   message: string;
@@ -52,6 +53,7 @@ export class HeaderComponent
   isOpenSidebar?: boolean;
   docElement?: HTMLElement;
   isFullScreen = false;
+  UserProfile?: User;
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -65,9 +67,7 @@ export class HeaderComponent
     super();
   }
   listLang = [
-    { text: 'English', flag: 'assets/images/flags/us.jpg', lang: 'en' },
-    { text: 'Spanish', flag: 'assets/images/flags/spain.jpg', lang: 'es' },
-    { text: 'German', flag: 'assets/images/flags/germany.jpg', lang: 'de' },
+    { text: 'Español', flag: 'assets/images/flags/spain.jpg', lang: 'es' },
   ];
   notifications: Notifications[] = [
     {
@@ -121,23 +121,31 @@ export class HeaderComponent
     },
   ];
   ngOnInit() {
+    this.setProfileUser()
     this.config = this.configService.configData;
-    this.userImg = this.authService.currentUserValue.img;
+    // this.userImg = this.authService.currentUserValue.img;
+    this.userImg = 'assets/images/user/admin.jpg';
     this.docElement = document.documentElement;
 
-    this.homePage = 'dashboard/dashboard1';
+    this.homePage = 'disercomi/perfil';
 
     this.langStoreValue = localStorage.getItem('lang') as string;
     const val = this.listLang.filter((x) => x.lang === this.langStoreValue);
     this.countryName = val.map((element) => element.text);
     if (val.length === 0) {
       if (this.flagvalue === undefined) {
-        this.defaultFlag = 'assets/images/flags/us.jpg';
+        this.defaultFlag = 'assets/images/flags/spain.jpg';
       }
     } else {
       this.flagvalue = val.map((element) => element.flag);
     }
   }
+
+  setProfileUser(){
+    return this.authService.currentProfileUserValue;
+  }
+
+
 
   callFullscreen() {
     if (!this.isFullScreen) {

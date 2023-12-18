@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import {catchError, map} from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { User } from '../models/user';
 import { environment } from 'environments/environment';
 
@@ -11,16 +11,27 @@ import { environment } from 'environments/environment';
 export class AuthService {
   private currentUserSubject: BehaviorSubject<User>;
   public currentUser: Observable<User>;
+  public currentProfileUser: Observable<User>
+  private currentUserProfile: BehaviorSubject<User>;
 
   constructor(private http: HttpClient) {
     this.currentUserSubject = new BehaviorSubject<User>(
       JSON.parse(localStorage.getItem('currentUser') || '{}')
     );
     this.currentUser = this.currentUserSubject.asObservable();
+
+    this.currentUserProfile = new  BehaviorSubject<User>(
+      JSON.parse(localStorage.getItem('perfil') || '{}')
+    )
+    this.currentProfileUser = this.currentUserProfile.asObservable();
   }
 
   public get currentUserValue(): User {
     return this.currentUserSubject.value;
+  }
+
+  public get currentProfileUserValue(): User {
+    return this.currentUserProfile.value;
   }
 
   private getHeadersWithAuthorization(token: string): HttpHeaders {
@@ -44,16 +55,17 @@ export class AuthService {
       );
   }
 
-  profileUser(token: string){
-    console.log("Profiles " , token)
-    const headers = this.getHeadersWithAuthorization(token);
+  profileUser(){
     return this.http
-      .get<never>(`${environment.apiUrl}/usuarios/autenticado`, {headers})
+      .get<User>(`${environment.apiUrl}/usuarios/autenticado`)
       .pipe(
-        map((r) => {
-          return r;
+        map((user) => {
+          localStorage.setItem('perfil', JSON.stringify(user))
+          this.currentUserSubject.next(user);
+          return user;
         })
       )
+
   }
 
   logout() {

@@ -70,7 +70,21 @@ export class MainLayoutComponent implements AfterViewInit {
 
     //------------ set varient end----------------
 
-    //------------ set theme start----------------
+    //------------ set lang start----------------
+    if (localStorage.getItem('lang')) {
+      this.renderer.removeClass(this.document.body, this.config.layout.lang);
+      this.renderer.addClass(
+        this.document.body,
+        localStorage.getItem('lang') as string
+      );
+    } else {
+      localStorage.setItem('lang',this.config.layout.lang)
+    }
+
+
+    //------------ set lang start----------------
+    //
+    // ------------ set theme start----------------
 
     if (localStorage.getItem('choose_skin')) {
       this.renderer.removeClass(

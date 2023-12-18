@@ -4,6 +4,7 @@ export interface InConfiguration {
     variant: string;
     theme_color: string;
     logo_bg_color: string;
+    lang: string;
     sidebar: {
       collapsed: boolean;
       backgroundColor: string;

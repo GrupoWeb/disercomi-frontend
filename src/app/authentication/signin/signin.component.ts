@@ -49,6 +49,13 @@ export class SigninComponent
   get f() {
     return this.authForm.controls;
   }
+
+  async setProfileUser() {
+    this.authService.profileUser()
+      .subscribe()
+
+  }
+
   onSubmit() {
     this.submitted = true;
     this.loading = true;
@@ -65,7 +72,8 @@ export class SigninComponent
               if (res) {
                 const token = this.authService.currentUserValue.token;
                 if (token) {
-                  this.router.navigate(['/dashboard/dashboard1']);
+                  this.setProfileUser()
+                  this.router.navigate(['/disercomi/perfil']);
                 }
               } else {
                 this.error = 'Ingreso invalido';
