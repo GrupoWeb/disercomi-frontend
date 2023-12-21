@@ -25,7 +25,7 @@ export const ROUTES: RouteInfo[] = [
     submenu: [],
   },
   {
-    path: 'advance-table',
+    path: 'disercomi/documentos',
     title: 'DISERCOMI.DOCUMENTS.TEXT',
     iconType: 'feather',
     icon: 'trello',

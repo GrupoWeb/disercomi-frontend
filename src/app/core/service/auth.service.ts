@@ -34,11 +34,6 @@ export class AuthService {
     return this.currentUserProfile.value;
   }
 
-  private getHeadersWithAuthorization(token: string): HttpHeaders {
-    return new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
-  }
 
   login(correo: string, password: string) {
     return this.http

@@ -124,7 +124,7 @@ export class HeaderComponent
     this.setProfileUser()
     this.config = this.configService.configData;
     // this.userImg = this.authService.currentUserValue.img;
-    this.userImg = 'assets/images/user/admin.jpg';
+    this.userImg = 'assets/images/user/user_perfil.png';
     this.docElement = document.documentElement;
 
     this.homePage = 'disercomi/perfil';

@@ -11,5 +11,11 @@ export class User {
   correo!: string;
   nit!: string;
   fechaHoraAcceso!: string;
-  idRol!: string
+  nombreZonaFranca!: string;
+  telefono!: string;
+  direccion!: string;
+  zona!: string;
+  municipio!: string;
+  departamento!: string;
+  representantesLegales!: [];
 }
