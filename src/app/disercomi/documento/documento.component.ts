@@ -1,30 +1,20 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { TableServiceService } from '../componentes/Services/table-service.service';
-import { HttpClient } from '@angular/common/http';
-import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatSort, MatSortModule } from '@angular/material/sort';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 import { DocumentTable } from '../componentes/TablesModels/document-table.model';
-import {CollectionViewer, DataSource} from '@angular/cdk/collections';
+import { TableServiceService } from "../componentes/Services/table-service.service";
 import {
   MatSnackBar,
   MatSnackBarHorizontalPosition,
-  MatSnackBarVerticalPosition,
+  MatSnackBarVerticalPosition
 } from '@angular/material/snack-bar';
-import { BehaviorSubject, fromEvent, Observable } from 'rxjs';
-// import { map } from 'rxjs/operators';
-// // import { FormDialogComponent } from '../componentes/dialogs/form-dialog/form-dialog.component';
-// import { DeleteDialogComponent } from '../componentes/dialogs/delete/delete.component';
+
 import { MAT_DATE_LOCALE, MatRippleModule } from '@angular/material/core';
-import { MatMenuTrigger, MatMenuModule } from '@angular/material/menu';
-import { SelectionModel } from '@angular/cdk/collections';
-// import { Direction } from '@angular/cdk/bidi';
+
 import {
-  // TableExportUtil,
-  // TableElement,
+  TableElement, TableExportUtil,
   UnsubscribeOnDestroyAdapter,
 } from '@shared';
-import { NgClass, DatePipe } from '@angular/common';
+import {NgClass, DatePipe, formatDate} from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FeatherIconsComponent } from '@shared/components/feather-icons/feather-icons.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -33,6 +23,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BreadcrumbComponent } from '@shared/components/breadcrumb/breadcrumb.component';
+import {BehaviorSubject, fromEvent, merge, Observable} from "rxjs";
+import {MatSort, MatSortModule} from "@angular/material/sort";
+import {map} from "rxjs/operators";
+import {DataSource, SelectionModel} from "@angular/cdk/collections";
+import {HttpClient} from "@angular/common/http";
+import {AdvanceTable} from "../../advance-table/advance-table.model";
+import {MatMenuModule, MatMenuTrigger} from "@angular/material/menu";
+import {AuthService} from "@core";
 
 @Component({
   selector: 'app-documento',
@@ -44,15 +42,15 @@ import { BreadcrumbComponent } from '@shared/components/breadcrumb/breadcrumb.co
     MatButtonModule,
     MatIconModule,
     MatTableModule,
-    MatSortModule,
     NgClass,
     MatCheckboxModule,
     FeatherIconsComponent,
     MatRippleModule,
     MatProgressSpinnerModule,
-    MatMenuModule,
     MatPaginatorModule,
     DatePipe,
+    MatSortModule,
+    MatMenuModule,
   ],
   templateUrl: './documento.component.html',
   styleUrl: './documento.component.scss'
@@ -61,32 +59,30 @@ export class DocumentoComponent extends UnsubscribeOnDestroyAdapter implements O
 
   displayedColumns = [
     'select',
-    'img',
-    'fName',
-    'lName',
-    'email',
-    'gender',
-    'bDate',
-    'mobile',
-    'address',
-    'country',
-    'actions',
+    'extension',
+    'fechaHoraAdicion',
+    'idTipoArchivo',
+    'tipoContenido',
+    'usuarioAdicion',
+    'idArchivo',
+    'nombreTipoArchivo',
   ];
-  DocumentData?: TableServiceService;
-  dataSource!: DocumentDataSources;
+  exampleDatabase?: TableServiceService
+  DocumentList!: DataSourceFetch;
   selection = new SelectionModel<DocumentTable>(true, []);
   id?: number;
-  DocumentTable?: DocumentTable;
+  avanceTable?: DocumentTable;
 
 
   constructor(
+    private tableServiceService: TableServiceService,
     public httpClient: HttpClient,
-    public dialog: MatDialog,
-    public DocumentTableService: TableServiceService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private authService: AuthService,
   ) {
     super();
   }
+
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
   @ViewChild('filter', { static: true }) filter!: ElementRef;
@@ -95,163 +91,76 @@ export class DocumentoComponent extends UnsubscribeOnDestroyAdapter implements O
   contextMenuPosition = { x: '0px', y: '0px' };
 
   ngOnInit(): void {
-    this.loadData();
-    }
+    this.loadData()
+  }
 
   refresh() {
-    this.loadData();
+    return this.loadData()
   }
 
-  addNew() {
-    // let tempDirection: Direction;
-    // if (localStorage.getItem('isRtl') === 'true') {
-    //   tempDirection = 'rtl';
-    // } else {
-    //   tempDirection = 'ltr';
-    // }
-    // const dialogRef = this.dialog.open(FormDialogComponent, {
-    //   data: {
-    //     DocumentTable: this.DocumentTable,
-    //     action: 'add',
-    //   },
-    //   direction: tempDirection,
-    // });
-    // this.subs.sink = dialogRef.afterClosed().subscribe((result) => {
-    //   if (result === 1) {
-    //     // After dialog is closed we're doing frontend updates
-    //     // For add we're just pushing a new row inside DataService
-    //     this.DocumentData?.dataChange.value.unshift(
-    //       this.DocumentTableService.getDialogData()
-    //     );
-    //     this.refreshTable();
-    //     this.showNotification(
-    //       'snackbar-success',
-    //       'Add Record Successfully...!!!',
-    //       'bottom',
-    //       'center'
-    //     );
-    //   }
-    // });
+  addNew(){}
+
+  editCall(row: DocumentTable) {
+    console.log(row)
   }
 
-  editCall() {
-    // this.id = row.id;
-    // let tempDirection: Direction;
-    // if (localStorage.getItem('isRtl') === 'true') {
-    //   tempDirection = 'rtl';
-    // } else {
-    //   tempDirection = 'ltr';
-    // }
-    // const dialogRef = this.dialog.open(FormDialogComponent, {
-    //   data: {
-    //     DocumentTable: row,
-    //     action: 'edit',
-    //   },
-    //   direction: tempDirection,
-    // });
-    // this.subs.sink = dialogRef.afterClosed().subscribe((result) => {
-    //   if (result === 1) {
-    //     // When using an edit things are little different, firstly we find record inside DataService by id
-    //     const foundIndex = this.DocumentData?.dataChange.value.findIndex(
-    //       (x) => x.id === this.id
-    //     );
-    //     // Then you update that record using data from dialogData (values you enetered)
-    //     if (foundIndex != null && this.DocumentData) {
-    //       this.DocumentData.dataChange.value[foundIndex] =
-    //         this.DocumentTableService.getDialogData();
-    //       // And lastly refresh table
-    //       this.refreshTable();
-    //       this.showNotification(
-    //         'black',
-    //         'Edit Record Successfully...!!!',
-    //         'bottom',
-    //         'center'
-    //       );
-    //     }
-    //   }
-    // });
+  deleteItem(row: AdvanceTable) {
+    console.log(row)
   }
-  // deleteItem(row: DocumentTable) {
-  //   this.id = row.id;
-  //   let tempDirection: Direction;
-  //   if (localStorage.getItem('isRtl') === 'true') {
-  //     tempDirection = 'rtl';
-  //   } else {
-  //     tempDirection = 'ltr';
-  //   }
-  //   const dialogRef = this.dialog.open(DeleteDialogComponent, {
-  //     data: row,
-  //     direction: tempDirection,
-  //   });
-  //   this.subs.sink = dialogRef.afterClosed().subscribe((result) => {
-  //     if (result === 1) {
-  //       const foundIndex = this.DocumentData?.dataChange.value.findIndex(
-  //         (x) => x.id === this.id
-  //       );
-  //       // for delete we use splice in order to remove single object from DataService
-  //       if (foundIndex != null && this.DocumentData) {
-  //         this.DocumentData.dataChange.value.splice(foundIndex, 1);
-  //         this.refreshTable();
-  //         this.showNotification(
-  //           'snackbar-danger',
-  //           'Delete Record Successfully...!!!',
-  //           'bottom',
-  //           'center'
-  //         );
-  //       }
-  //     }
-  //   });
-  // }
+
   private refreshTable() {
     this.paginator._changePageSize(this.paginator.pageSize);
   }
-  /** Whether the number of selected elements matches the total number of rows. */
+
   isAllSelected() {
     const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.renderedData.length;
+    const numRows = this.DocumentList.renderedData.length;
     return numSelected === numRows;
   }
 
   masterToggle() {
     this.isAllSelected()
       ? this.selection.clear()
-      : this.dataSource.renderedData.forEach((row) =>
+      : this.DocumentList.renderedData.forEach((row) =>
         this.selection.select(row)
       );
   }
-  // removeSelectedRows() {
-  //   const totalSelect = this.selection.selected.length;
-  //   this.selection.selected.forEach((item) => {
-  //     const index: number = this.dataSource.renderedData.findIndex(
-  //       (d) => d === item
-  //     );
-  //     // console.log(this.dataSource.renderedData.findIndex((d) => d === item));
-  //     this.DocumentData?.dataChange.value.splice(index, 1);
-  //     this.refreshTable();
-  //     this.selection = new SelectionModel<DocumentTable>(true, []);
-  //   });
-  //   this.showNotification(
-  //     'snackbar-danger',
-  //     totalSelect + ' Record Delete Successfully...!!!',
-  //     'bottom',
-  //     'center'
-  //   );
-  // }
+
+  removeSelectedRows() {
+    const totalSelect = this.selection.selected.length;
+    this.selection.selected.forEach((item) => {
+      const index: number = this.DocumentList.renderedData.findIndex(
+        (d) => d === item
+      );
+      // console.log(this.dataSource.renderedData.findIndex((d) => d === item));
+      this.tableServiceService?.dataChange.value.splice(index, 1);
+      this.refreshTable();
+      this.selection = new SelectionModel<DocumentTable>(true, []);
+    });
+    this.showNotification(
+      'snackbar-danger',
+      totalSelect + ' Record Delete Successfully...!!!',
+      'bottom',
+      'center'
+    );
+  }
+
   public loadData() {
-    this.DocumentData = new TableServiceService(this.httpClient);
-    this.dataSource = new DocumentDataSources(
-      this.DocumentData,
+    this.tableServiceService = new TableServiceService(this.httpClient, this.authService)
+    this.DocumentList = new DataSourceFetch(
+      this.tableServiceService,
       this.paginator,
       this.sort
-    );
+    )
+
     this.subs.sink = fromEvent(this.filter.nativeElement, 'keyup').subscribe(
       () => {
-        if (!this.dataSource) {
-          return;
+        if(!this.DocumentList) {
+          return
         }
-        this.dataSource.filter = this.filter.nativeElement.value;
+        this.DocumentList.filter = this.filter.nativeElement.value
       }
-    );
+    )
   }
 
   showNotification(
@@ -268,19 +177,7 @@ export class DocumentoComponent extends UnsubscribeOnDestroyAdapter implements O
     });
   }
 
-  // export table data in excel file
-  // exportExcel() {
-  //   // key name with space add in brackets
-  //   const exportData: Partial<TableElement>[] =
-  //     this.dataSource.filteredData.map((x) => ({
-  //       'First Name': x.documento,
-  //
-  //     }));
-  //
-  //   TableExportUtil.exportToExcel(exportData, 'excel');
-  // }
-
-  onContextMenu(event: MouseEvent, item: DocumentTable) {
+  onContextMenu(event: MouseEvent, item: AdvanceTable) {
     event.preventDefault();
     this.contextMenuPosition.x = event.clientX + 'px';
     this.contextMenuPosition.y = event.clientY + 'px';
@@ -290,15 +187,126 @@ export class DocumentoComponent extends UnsubscribeOnDestroyAdapter implements O
       this.contextMenu.openMenu();
     }
   }
-}
 
-export class DocumentDataSources extends DataSource<DocumentTable> {
-  connect(collectionViewer: CollectionViewer): Observable<DocumentTable[]> {
-    return undefined;
+  exportExcel() {
+    // key name with space add in brackets
+    const exportData: Partial<TableElement>[] =
+      this.DocumentList.filteredData.map((x) => ({
+        'Extension': x.extension,
+        'Tipo Contenido': x.tipoContenido,
+        'Nombre Archivo': x.nombreTipoArchivo,
+        'Fecha Adicion': formatDate(new Date(x.fechaHoraAdicion), 'yyyy-MM-dd', 'en') || '',
+      }));
+
+    TableExportUtil.exportToExcel(exportData, 'excel');
   }
 
-  disconnect(collectionViewer: CollectionViewer): void {
+}
+
+export class DataSourceFetch extends DataSource<DocumentTable> {
+  filterChange = new BehaviorSubject('');
+
+  get filter(): string {
+    return this.filterChange.value
+  }
+
+  set filter(filter: string){
+    this.filterChange.next(filter);
+  }
+
+  filteredData: DocumentTable[] = [];
+  renderedData: DocumentTable[] = [];
+
+
+  constructor(
+    public apiDataBase: TableServiceService,
+    public paginator: MatPaginator,
+    public _sort: MatSort
+  ) {
+    super();
+    this.filterChange.subscribe(() => (this.paginator.pageIndex = 0));
+  }
+
+  connect(): Observable<DocumentTable[]> {
+    const displayDataChanges = [
+      this.apiDataBase.dataChange,
+      this._sort.sortChange,
+      this.filterChange,
+      this.paginator.page,
+    ];
+    this.apiDataBase.getFilesByUser();
+    return merge(...displayDataChanges).pipe(
+      map(() => {
+        this.filteredData = this.apiDataBase.data
+          .slice()
+          .filter((documentTable: DocumentTable) => {
+            const searchStr = (
+                documentTable.extension +
+                documentTable.fechaHoraAdicion +
+                documentTable.idTipoArchivo +
+                documentTable.tipoContenido +
+                documentTable.usuarioAdicion +
+                documentTable.idArchivo +
+                documentTable.nombreTipoArchivo
+            ).toLowerCase();
+            return searchStr.indexOf(this.filter.toLowerCase()) !== -1;
+          });
+
+        const sortedData = this.sortData(this.filteredData.slice());
+        const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+        this.renderedData = sortedData.splice(
+          startIndex,
+          this.paginator.pageSize
+        );
+        return this.renderedData;
+      })
+    )
+  }
+
+  disconnect(): void {
+  }
+
+  sortData(data: DocumentTable[]): DocumentTable[] {
+    console.log("data " , this._sort)
+    if (!this._sort.active || this._sort.direction === '') {
+      return data;
+    }
+
+    return data.sort((a, b) => {
+      let propertyA: number | string = '';
+      let propertyB: number | string = '';
+      console.log("sor " , this._sort.active)
+      switch (this._sort.active) {
+        case 'extension':
+          [propertyA, propertyB] = [a.extension, b.extension];
+          break;
+        case 'fechaHoraAdicion':
+          [propertyA, propertyB] = [a.fechaHoraAdicion, b.fechaHoraAdicion];
+          break;
+        case 'idTipoArchivo':
+          [propertyA, propertyB] = [a.idTipoArchivo, b.idTipoArchivo];
+          break;
+        case 'tipoContenido':
+          [propertyA, propertyB] = [a.tipoContenido, b.tipoContenido];
+          break;
+        case 'usuarioAdicion':
+          [propertyA, propertyB] = [a.usuarioAdicion, b.usuarioAdicion];
+          break;
+        case 'idArchivo':
+          [propertyA, propertyB] = [a.idArchivo, b.idArchivo];
+          break;
+        case 'nombreTipoArchivo':
+          [propertyA, propertyB] = [a.nombreTipoArchivo, b.nombreTipoArchivo];
+          break;
+      }
+      const valueA = isNaN(+propertyA) ? propertyA : + propertyB;
+      const valueB = isNaN(+propertyB) ? propertyB : + propertyA;
+      return (
+        (valueA < valueB ? -1 : 1) * (this._sort.direction === 'asc' ? 1 : -1)
+      );
+    })
   }
 
 
 }
+

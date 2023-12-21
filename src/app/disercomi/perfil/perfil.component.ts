@@ -7,6 +7,7 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatInputModule} from "@angular/material/input";
 import {MatTabsModule} from "@angular/material/tabs";
 import {AuthService} from "@core";
+import { CommonModule } from "@angular/common";
 
 @Component({
   selector: 'app-perfil',
@@ -18,7 +19,8 @@ import {AuthService} from "@core";
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
-    MatTabsModule
+    MatTabsModule,
+    CommonModule
   ],
   templateUrl: './perfil.component.html',
   styleUrls: ['./perfil.component.scss']
