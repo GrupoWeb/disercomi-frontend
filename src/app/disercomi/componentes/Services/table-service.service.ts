@@ -4,7 +4,7 @@ import {DocumentTable} from "../TablesModels/document-table.model";
 import {environment} from "../../../../environments/environment";
 import {UnsubscribeOnDestroyAdapter} from "@shared";
 import {BehaviorSubject} from "rxjs";
-import {AuthService} from "@core";
+import { AuthService } from '@core'
 
 
 

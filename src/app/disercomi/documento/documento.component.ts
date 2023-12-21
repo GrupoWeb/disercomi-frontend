@@ -30,7 +30,7 @@ import {DataSource, SelectionModel} from "@angular/cdk/collections";
 import {HttpClient} from "@angular/common/http";
 import {AdvanceTable} from "../../advance-table/advance-table.model";
 import {MatMenuModule, MatMenuTrigger} from "@angular/material/menu";
-import {AuthService} from "@core";
+import { AuthService } from '@core'
 
 @Component({
   selector: 'app-documento',
@@ -59,13 +59,9 @@ export class DocumentoComponent extends UnsubscribeOnDestroyAdapter implements O
 
   displayedColumns = [
     'select',
-    'extension',
-    'fechaHoraAdicion',
     'idTipoArchivo',
-    'tipoContenido',
-    'usuarioAdicion',
-    'idArchivo',
     'nombreTipoArchivo',
+    'actions',
   ];
   exampleDatabase?: TableServiceService
   DocumentList!: DataSourceFetch;
@@ -78,7 +74,7 @@ export class DocumentoComponent extends UnsubscribeOnDestroyAdapter implements O
     private tableServiceService: TableServiceService,
     public httpClient: HttpClient,
     private snackBar: MatSnackBar,
-    private authService: AuthService,
+    private authenticationService: AuthService,
   ) {
     super();
   }
@@ -146,7 +142,7 @@ export class DocumentoComponent extends UnsubscribeOnDestroyAdapter implements O
   }
 
   public loadData() {
-    this.tableServiceService = new TableServiceService(this.httpClient, this.authService)
+    this.tableServiceService = new TableServiceService(this.httpClient, this.authenticationService)
     this.DocumentList = new DataSourceFetch(
       this.tableServiceService,
       this.paginator,
@@ -267,7 +263,6 @@ export class DataSourceFetch extends DataSource<DocumentTable> {
   }
 
   sortData(data: DocumentTable[]): DocumentTable[] {
-    console.log("data " , this._sort)
     if (!this._sort.active || this._sort.direction === '') {
       return data;
     }
@@ -275,7 +270,6 @@ export class DataSourceFetch extends DataSource<DocumentTable> {
     return data.sort((a, b) => {
       let propertyA: number | string = '';
       let propertyB: number | string = '';
-      console.log("sor " , this._sort.active)
       switch (this._sort.active) {
         case 'extension':
           [propertyA, propertyB] = [a.extension, b.extension];
@@ -306,7 +300,5 @@ export class DataSourceFetch extends DataSource<DocumentTable> {
       );
     })
   }
-
-
 }
 

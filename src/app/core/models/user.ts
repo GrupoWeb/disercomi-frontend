@@ -18,4 +18,35 @@ export class User {
   municipio!: string;
   departamento!: string;
   representantesLegales!: [];
+  currentPassword!: string;
+  newPassword!: string;
+  confirmPassword!: string;
+
+
+  constructor(user: User) {
+    this.id = user.id  || 0;
+    this.img = user.img || '';
+    this.username = user.username || '';
+    this.password = user.password || '';
+    this.firstName = user.firstName || '';
+    this.lastName = user.lastName || '';
+    this.token = user.token  || '';
+    this.idUsuario = user.idUsuario || 0;
+    this.nombre = user.nombre || '';
+    this.correo = user.correo || '';
+    this.nit = user.nit || '';
+    this.fechaHoraAcceso = user.fechaHoraAcceso || '';
+    this.nombreZonaFranca = user.nombreZonaFranca || '';
+    this.telefono = user.telefono  || '';
+    this.direccion = user.direccion || '';
+    this.zona = user.zona || '';
+    this.municipio = user.municipio || '';
+    this.departamento = user.departamento || '';
+    this.representantesLegales = user.representantesLegales || '';
+    this.currentPassword = user.currentPassword || '';
+    this.newPassword = user.newPassword || '';
+    this.confirmPassword = user.confirmPassword || '';
+  }
 }
+
+

@@ -128,20 +128,22 @@
               </div>
               <div class="body">
                 <div class="example-container">
-                  <mat-form-field class="example-full-width" appearance="fill">
-                    <mat-label>Contraseña Actual</mat-label>
-                    <input matInput type="password">
-                  </mat-form-field>
-                  <mat-form-field class="example-full-width" appearance="fill">
-                    <mat-label>Nueva Contraseña</mat-label>
-                    <input matInput type="password">
-                  </mat-form-field>
-                  <mat-form-field class="example-full-width" appearance="fill">
-                    <mat-label>Confirmar Contraseña</mat-label>
-                    <input matInput type="password">
-                  </mat-form-field>
+                  <form class="register-form m-4" [formGroup]="passwordForm!" (ngSubmit)="submit">
+                    <mat-form-field class="example-full-width" appearance="fill">
+                      <mat-label>Contraseña Actual</mat-label>
+                      <input matInput type="password" formControlName="currentPassword">
+                    </mat-form-field>
+                    <mat-form-field class="example-full-width" appearance="fill">
+                      <mat-label>Nueva Contraseña</mat-label>
+                      <input matInput type="password" formControlName="newPassword">
+                    </mat-form-field>
+                    <mat-form-field class="example-full-width" appearance="fill">
+                      <mat-label>Confirmar Contraseña</mat-label>
+                      <input matInput type="password" formControlName="confirmPassword">
+                    </mat-form-field>
+                  </form>
                 </div>
-                <button mat-raised-button color="primary">Guardar Cambios</button>
+                <button mat-raised-button color="primary" [disabled]="!passwordForm?.valid"  (click)="changePassword()">Guardar Cambios</button>
               </div>
             </mat-tab>
           </mat-tab-group>

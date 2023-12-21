@@ -5,7 +5,7 @@ import {
   MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
 import { MatButtonModule } from '@angular/material/button';
-import { BreadcrumbComponent } from '../../shared/components/breadcrumb/breadcrumb.component';
+import { BreadcrumbComponent } from '@shared/components/breadcrumb/breadcrumb.component';
 @Component({
     selector: 'app-snackbar',
     templateUrl: './snackbar.component.html',

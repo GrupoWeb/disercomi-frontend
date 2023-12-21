@@ -34,8 +34,8 @@
                   </div>
                 </li>
                 <li class="tbl-header-btn">
-                  <div class="m-l-10" matTooltip="DELETE"  >
-                    <button mat-mini-fab color="warn" >
+                  <div class="m-l-10" matTooltip="DELETE" [hidden]=!selection.hasValue()>
+                    <button mat-mini-fab color="warn" (click)="removeSelectedRows()">
                       <mat-icon class="col-white">delete</mat-icon>
                     </button>
                   </div>
@@ -65,39 +65,14 @@
                   </mat-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="extension">
-                  <mat-header-cell *matHeaderCellDef mat-sort-header>Id</mat-header-cell>
-                  <mat-cell *matCellDef="let row">{{row.extension}}</mat-cell>
-                </ng-container>
-
-                <ng-container matColumnDef="fechaHoraAdicion">
-                  <mat-header-cell *matHeaderCellDef mat-sort-header>Id</mat-header-cell>
-                  <mat-cell *matCellDef="let row">{{row.fechaHoraAdicion}}</mat-cell>
+                <ng-container matColumnDef="nombreTipoArchivo">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Documento</mat-header-cell>
+                  <mat-cell *matCellDef="let row">{{row.nombreTipoArchivo}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="idTipoArchivo">
-                  <mat-header-cell *matHeaderCellDef mat-sort-header>Id</mat-header-cell>
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Código</mat-header-cell>
                   <mat-cell *matCellDef="let row">{{row.idTipoArchivo}}</mat-cell>
-                </ng-container>
-
-                <ng-container matColumnDef="tipoContenido">
-                  <mat-header-cell *matHeaderCellDef mat-sort-header>Id</mat-header-cell>
-                  <mat-cell *matCellDef="let row">{{row.tipoContenido}}</mat-cell>
-                </ng-container>
-
-                <ng-container matColumnDef="usuarioAdicion">
-                  <mat-header-cell *matHeaderCellDef mat-sort-header>Id</mat-header-cell>
-                  <mat-cell *matCellDef="let row">{{row.usuarioAdicion}}</mat-cell>
-                </ng-container>
-
-                <ng-container matColumnDef="idArchivo">
-                  <mat-header-cell *matHeaderCellDef mat-sort-header>Id</mat-header-cell>
-                  <mat-cell *matCellDef="let row">{{row.idArchivo}}</mat-cell>
-                </ng-container>
-
-                <ng-container matColumnDef="nombreTipoArchivo">
-                  <mat-header-cell *matHeaderCellDef mat-sort-header>Id</mat-header-cell>
-                  <mat-cell *matCellDef="let row">{{row.nombreTipoArchivo}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="actions">
