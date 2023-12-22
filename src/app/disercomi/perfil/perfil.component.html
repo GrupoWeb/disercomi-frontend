@@ -128,7 +128,7 @@
               </div>
               <div class="body">
                 <div class="example-container">
-                  <form class="register-form m-4" [formGroup]="passwordForm!" (ngSubmit)="submit">
+                  <form class="register-form m-4" [formGroup]="passwordForm!" >
                     <mat-form-field class="example-full-width" appearance="fill">
                       <mat-label>Contraseña Actual</mat-label>
                       <input matInput type="password" formControlName="currentPassword">
@@ -141,13 +141,25 @@
                       <mat-label>Confirmar Contraseña</mat-label>
                       <input matInput type="password" formControlName="confirmPassword">
                     </mat-form-field>
+                    <div *ngIf="passwordForm && passwordForm.hasError('notSame') && passwordForm.get('confirmPassword')?.dirty">
+                      <div class="alert alert-danger">
+                        <strong>Error! </strong> Las contraseñas no coinciden.
+                      </div>
+                    </div>
                   </form>
                 </div>
-                <button mat-raised-button color="primary"  [disabled]="buttonAccion"  (click)="changePassword()">
-                  Guardar Cambios
-                  <mat-icon><mat-spinner diameter="20" color="accent" *ngIf="buttonAccion">
-                  </mat-spinner></mat-icon>
-                </button>
+                <div class="example-button-row">
+                    <button mat-mini-fab color="primary"  [disabled]="!passwordForm || passwordForm.invalid" (click)="changePassword()">
+                      <mat-icon class="col-white" *ngIf="!buttonAccion">autorenew</mat-icon>
+                      <mat-icon *ngIf="buttonAccion">
+                        <mat-spinner diameter="20" color="accent" >
+                        </mat-spinner>
+                      </mat-icon>
+                    </button>
+                    <button mat-mini-fab color="warn" >
+                      <mat-icon class="col-white">clear</mat-icon>
+                    </button>
+                </div>
               </div>
             </mat-tab>
           </mat-tab-group>

@@ -9,7 +9,7 @@ import {MatTabsModule} from "@angular/material/tabs";
 import {AuthService, User} from "@core";
 import { CommonModule } from "@angular/common";
 import { UserService } from '../componentes/Services/user.service'
-import {ReactiveFormsModule, UntypedFormGroup, UntypedFormControl, Validators, UntypedFormBuilder,} from "@angular/forms";
+import {ReactiveFormsModule, UntypedFormGroup, UntypedFormControl, Validators, UntypedFormBuilder, FormGroup} from "@angular/forms";
 import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material/snack-bar";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -62,31 +62,54 @@ export class PerfilComponent implements OnInit{
   setProfileUser(): User{
     return this.authService.currentProfileUserValue;
   }
-
   createUserForm(): UntypedFormGroup {
     return this.fb.group(
       {
-        currentPassword: [this.userForm.currentPassword],
-        newPassword: [this.userForm.newPassword],
-        confirmPassword: [this.userForm.confirmPassword]
+        currentPassword: [this.userForm.currentPassword, Validators.required],
+        newPassword: [this.userForm.newPassword, Validators.required],
+        confirmPassword: [this.userForm.confirmPassword, Validators.required]
+      },
+      {
+        validator: this.checkPasswords.bind(this),
       }
     )
   }
+  checkPasswords(group: FormGroup) {
+    const newPasswordControl = group.get('newPassword');
+    const confirmPasswordControl = group.get('confirmPassword');
 
+    if (newPasswordControl && confirmPasswordControl) {
+      const newPassword = newPasswordControl.value;
+      const confirmPassword = confirmPasswordControl.value;
+
+      if (newPassword === confirmPassword) {
+        return null;
+      } else {
+        return { notSame: true };
+      }
+    }
+
+    return null;
+  }
   public changePassword() {
     this.buttonAccion = !this.buttonAccion
-    this.userService.changePassword(this.passwordForm?.getRawValue())
-      .subscribe({
-          next: () => {
-            this.showNotification('snackbar-danger','Contraseña actializada','top','center')
+    if(this.passwordForm?.valid) {
+      this.userService.changePassword(this.passwordForm?.getRawValue())
+        .subscribe({
+            next: () => {
+              this.showNotification('snackbar-success','Contraseña actializada','top','center')
+              this.passwordForm?.reset()
+              this.buttonAccion = !this.buttonAccion
+            },
+          error: (err: HttpErrorResponse) => {
             this.buttonAccion = !this.buttonAccion
-          },
-        error: (err: HttpErrorResponse) => {
-          this.buttonAccion = !this.buttonAccion
-        }
-      })
+          }
+        })
+    }else {
+      this.buttonAccion = !this.buttonAccion
+      this.showNotification('snackbar-info','No coiciden la nueva contraseña','top','center')
+    }
   }
-
   showNotification(
     colorName: string,
     text: string,
@@ -94,20 +117,10 @@ export class PerfilComponent implements OnInit{
     placementAlign: MatSnackBarHorizontalPosition
   ) {
     this.snackBar.open(text, '', {
-      duration: 2000,
+      duration: 4000,
       verticalPosition: placementFrom,
       horizontalPosition: placementAlign,
       panelClass: colorName,
     });
   }
-
-  getErrorMessage() {
-    return this.formControl.hasError('required')
-      ? 'Required field'
-      : this.formControl.hasError('email')
-        ? 'Not a valid email'
-        : '';
-  }
-
-  submit(){}
 }
