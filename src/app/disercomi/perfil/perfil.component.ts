@@ -11,6 +11,8 @@ import { CommonModule } from "@angular/common";
 import { UserService } from '../componentes/Services/user.service'
 import {ReactiveFormsModule, UntypedFormGroup, UntypedFormControl, Validators, UntypedFormBuilder,} from "@angular/forms";
 import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material/snack-bar";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-perfil',
@@ -24,7 +26,8 @@ import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition}
     MatInputModule,
     MatTabsModule,
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatProgressSpinnerModule
   ],
   templateUrl: './perfil.component.html',
   styleUrls: ['./perfil.component.scss']
@@ -33,6 +36,7 @@ export class PerfilComponent implements OnInit{
 
   passwordForm?: UntypedFormGroup;
   userForm: User;
+  buttonAccion: boolean
 
   constructor(
     private authService: AuthService,
@@ -43,6 +47,7 @@ export class PerfilComponent implements OnInit{
     const blankObject = {} as User;
     this.userForm = new User(blankObject);
     this.passwordForm = this.createUserForm();
+    this.buttonAccion = false
   }
 
 
@@ -54,7 +59,7 @@ export class PerfilComponent implements OnInit{
   ngOnInit(): void {
     this.setProfileUser()
   }
-  setProfileUser(){
+  setProfileUser(): User{
     return this.authService.currentProfileUserValue;
   }
 
@@ -69,8 +74,17 @@ export class PerfilComponent implements OnInit{
   }
 
   public changePassword() {
-    const respuesta  =  this.userService.changePassword(this.passwordForm?.getRawValue())
-    console.log(respuesta)
+    this.buttonAccion = !this.buttonAccion
+    this.userService.changePassword(this.passwordForm?.getRawValue())
+      .subscribe({
+          next: () => {
+            this.showNotification('snackbar-danger','Contraseña actializada','top','center')
+            this.buttonAccion = !this.buttonAccion
+          },
+        error: (err: HttpErrorResponse) => {
+          this.buttonAccion = !this.buttonAccion
+        }
+      })
   }
 
   showNotification(

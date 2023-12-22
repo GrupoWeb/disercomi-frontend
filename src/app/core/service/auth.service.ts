@@ -21,7 +21,7 @@ export class AuthService {
     this.currentUser = this.currentUserSubject.asObservable();
 
     this.currentUserProfile = new  BehaviorSubject<User>(
-      JSON.parse(localStorage.getItem('perfil') || '{}')
+      JSON.parse(localStorage.getItem('perfil') || '{}') as User
     )
     this.currentProfileUser = this.currentUserProfile.asObservable();
   }

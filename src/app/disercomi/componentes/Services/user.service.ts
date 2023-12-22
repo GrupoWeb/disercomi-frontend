@@ -4,6 +4,7 @@ import {environment} from "environments/environment";
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import { Messsages } from '@core/models/messsages'
 import {User} from "@core";
+import {Observable} from "rxjs";
 
 
 
@@ -18,19 +19,12 @@ export class UserService extends UnsubscribeOnDestroyAdapter {
     super();
   }
 
-  changePassword(user: User) {
+  changePassword(user: User): Observable<Messsages> {
     return this.http
       .post<Messsages>(`${environment.apiUrl}/usuarios/cambiarPassword`, {
         antiguoPass: user.currentPassword,
         nuevoPass: user.newPassword
       })
-      .subscribe({
-        next: (data) => {
-          return data;
-        },
-        error: (err: HttpErrorResponse) => {
-          return err;
-        }
-      })
+
   }
 }

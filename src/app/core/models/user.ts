@@ -1,4 +1,8 @@
-export class User {
+export interface RepresentanteLegal {
+  nit: string;
+  nombre: string;
+}
+  export class User {
   id!: number;
   img!: string;
   username!: string;
@@ -17,7 +21,7 @@ export class User {
   zona!: string;
   municipio!: string;
   departamento!: string;
-  representantesLegales!: [];
+  representantesLegales!: RepresentanteLegal[];
   currentPassword!: string;
   newPassword!: string;
   confirmPassword!: string;
