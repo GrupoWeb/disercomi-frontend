@@ -33,6 +33,11 @@ export class ErrorInterceptor implements HttpInterceptor {
           this.showNotification('snackbar-danger',mensajeError,'top','center')
         }
 
+        if (err.status === 500) {
+          const mensajeError = err.error.mensaje || "Error inesperado";
+          this.showNotification('snackbar-danger',mensajeError,'top','center')
+        }
+
         const error = err.error.message || err.statusText;
         return throwError(error);
       })

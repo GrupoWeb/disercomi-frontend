@@ -14,7 +14,7 @@ import { UnsubscribeOnDestroyAdapter } from '@shared';
 import { InConfiguration, DirectionService, RightSidebarService } from '@core';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { NgScrollbar } from 'ngx-scrollbar';
-import { FeatherIconsComponent } from '../../shared/components/feather-icons/feather-icons.component';
+import { FeatherIconsComponent } from '@shared/components/feather-icons/feather-icons.component';
 
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,

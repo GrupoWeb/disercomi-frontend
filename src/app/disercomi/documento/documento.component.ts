@@ -1,7 +1,6 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
-import { DocumentTable } from '../componentes/TablesModels/document-table.model';
-import { TableServiceService } from "../componentes/Services/table-service.service";
+import { DocumentTable } from '@core/models/TablesModels/document-table.model';
 import {
   MatSnackBar,
   MatSnackBarHorizontalPosition,
@@ -31,6 +30,10 @@ import {HttpClient} from "@angular/common/http";
 import {AdvanceTable} from "../../advance-table/advance-table.model";
 import {MatMenuModule, MatMenuTrigger} from "@angular/material/menu";
 import { AuthService } from '@core'
+import {FileService} from "@core/service/file.service";
+import {Direction} from "@angular/cdk/bidi";
+import {MatDialog} from "@angular/material/dialog";
+import {DocumentosDialogComponent} from "../componentes/dialogs/documentos-dialog/documentos-dialog.component";
 
 @Component({
   selector: 'app-documento',
@@ -63,7 +66,7 @@ export class DocumentoComponent extends UnsubscribeOnDestroyAdapter implements O
     'nombreTipoArchivo',
     'actions',
   ];
-  exampleDatabase?: TableServiceService
+  exampleDatabase?: FileService
   DocumentList!: DataSourceFetch;
   selection = new SelectionModel<DocumentTable>(true, []);
   id?: number;
@@ -71,10 +74,13 @@ export class DocumentoComponent extends UnsubscribeOnDestroyAdapter implements O
 
 
   constructor(
-    private tableServiceService: TableServiceService,
+    private tableServiceService: FileService,
+    private fileService: FileService,
     public httpClient: HttpClient,
     private snackBar: MatSnackBar,
     private authenticationService: AuthService,
+    public dialog: MatDialog,
+    private advanceService: FileService
   ) {
     super();
   }
@@ -94,14 +100,82 @@ export class DocumentoComponent extends UnsubscribeOnDestroyAdapter implements O
     return this.loadData()
   }
 
-  addNew(){}
+  addNew(){
+    let tempDirection: Direction;
+    if (localStorage.getItem('isRtl') === 'true') {
+      tempDirection = 'rtl';
+    } else {
+      tempDirection = 'ltr';
+    }
+    const dialogRef = this.dialog.open(DocumentosDialogComponent, {
+      data: {
+        advanceTable: this.advanceService,
+        action: 'add',
+      },
+      width: '650px',
+      disableClose: true,
+      direction: tempDirection,
+    });
 
-  editCall(row: DocumentTable) {
-    console.log(row)
+    this.subs.sink = dialogRef.afterClosed().subscribe((result) => {
+      if (result === 1) {
+        const updatedData = this.tableServiceService.data;
+
+        this.exampleDatabase?.dataChange.value.unshift(
+          ...updatedData
+        );
+        this.loadData()
+        this.refreshTable();
+        this.showNotification(
+          'snackbar-success',
+          'Add Record Successfully...!!!',
+          'bottom',
+          'center'
+        );
+      }
+    });
+
   }
 
-  deleteItem(row: AdvanceTable) {
-    console.log(row)
+  downloadFile(row: DocumentTable) {
+    this.fileService.getFile(row.idArchivo)
+      .subscribe(
+        {
+          next: (r) => {
+          this.fileService.downloadFile(r,row.nombreTipoArchivo)
+          },
+          error: (error) => {
+            this.showNotification(
+              'snackbar-danger',
+              error,
+              'bottom',
+              'center'
+            );
+          }
+        }
+      );
+  }
+
+  deleteItem(row: DocumentTable) {
+    this.fileService.DeleteFile(row.idArchivo)
+      .subscribe({
+        next: () => {
+          this.showNotification(
+            'snackbar-success',
+            'Archivo Desactivado con exito',
+            'bottom',
+            'center'
+          );
+          const updatedData = this.tableServiceService.data;
+          this.exampleDatabase?.dataChange.next([...updatedData]);
+          this.loadData()
+          this.refreshTable();
+        },
+        error: () => {
+          const mensajeError =  "Error inesperado";
+          this.showNotification('snackbar-danger',mensajeError,'top','center')
+        }
+      })
   }
 
   private refreshTable() {
@@ -122,27 +196,27 @@ export class DocumentoComponent extends UnsubscribeOnDestroyAdapter implements O
       );
   }
 
-  removeSelectedRows() {
-    const totalSelect = this.selection.selected.length;
-    this.selection.selected.forEach((item) => {
-      const index: number = this.DocumentList.renderedData.findIndex(
-        (d) => d === item
-      );
-      // console.log(this.dataSource.renderedData.findIndex((d) => d === item));
-      this.tableServiceService?.dataChange.value.splice(index, 1);
-      this.refreshTable();
-      this.selection = new SelectionModel<DocumentTable>(true, []);
-    });
-    this.showNotification(
-      'snackbar-danger',
-      totalSelect + ' Record Delete Successfully...!!!',
-      'bottom',
-      'center'
-    );
-  }
+  // removeSelectedRows() {
+  //   const totalSelect = this.selection.selected.length;
+  //   this.selection.selected.forEach((item) => {
+  //     const index: number = this.DocumentList.renderedData.findIndex(
+  //       (d) => d === item
+  //     );
+  //     // console.log(this.dataSource.renderedData.findIndex((d) => d === item));
+  //     this.tableServiceService?.dataChange.value.splice(index, 1);
+  //     this.refreshTable();
+  //     this.selection = new SelectionModel<DocumentTable>(true, []);
+  //   });
+  //   this.showNotification(
+  //     'snackbar-danger',
+  //     totalSelect + ' Record Delete Successfully...!!!',
+  //     'bottom',
+  //     'center'
+  //   );
+  // }
 
   public loadData() {
-    this.tableServiceService = new TableServiceService(this.httpClient, this.authenticationService)
+    this.tableServiceService = new FileService(this.httpClient, this.authenticationService)
     this.DocumentList = new DataSourceFetch(
       this.tableServiceService,
       this.paginator,
@@ -215,7 +289,7 @@ export class DataSourceFetch extends DataSource<DocumentTable> {
 
 
   constructor(
-    public apiDataBase: TableServiceService,
+    public apiDataBase: FileService,
     public paginator: MatPaginator,
     public _sort: MatSort
   ) {

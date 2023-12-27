@@ -12,7 +12,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { BreadcrumbComponent } from '../../shared/components/breadcrumb/breadcrumb.component';
+import { BreadcrumbComponent } from '@shared/components/breadcrumb/breadcrumb.component';
 
 // import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 export interface DialogData {

@@ -8,7 +8,7 @@ import {MatInputModule} from "@angular/material/input";
 import {MatTabsModule} from "@angular/material/tabs";
 import {AuthService, User} from "@core";
 import { CommonModule } from "@angular/common";
-import { UserService } from '../componentes/Services/user.service'
+import { UserService } from '@core/service/user.service'
 import {ReactiveFormsModule, UntypedFormGroup, UntypedFormControl, Validators, UntypedFormBuilder, FormGroup} from "@angular/forms";
 import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material/snack-bar";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";

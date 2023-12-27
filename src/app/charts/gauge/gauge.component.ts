@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { NgxGaugeType } from 'ngx-gauge/gauge/gauge';
 import { MatButtonModule } from '@angular/material/button';
 import { NgxGaugeModule } from 'ngx-gauge';
-import { BreadcrumbComponent } from '../../shared/components/breadcrumb/breadcrumb.component';
+import { BreadcrumbComponent } from '@shared/components/breadcrumb/breadcrumb.component';
 
 interface GaugeValues {
   [key: number]: number;

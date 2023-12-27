@@ -17,7 +17,7 @@ import {
   ApexGrid,
   ApexMarkers,
 } from 'ng-apexcharts';
-import { BreadcrumbComponent } from '../../shared/components/breadcrumb/breadcrumb.component';
+import { BreadcrumbComponent } from '@shared/components/breadcrumb/breadcrumb.component';
 export type circleChartOptions = {
   series?: ApexNonAxisChartSeries;
   chart?: ApexChart;
