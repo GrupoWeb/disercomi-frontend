@@ -27,7 +27,6 @@ import {MatSort, MatSortModule} from "@angular/material/sort";
 import {map} from "rxjs/operators";
 import {DataSource, SelectionModel} from "@angular/cdk/collections";
 import {HttpClient} from "@angular/common/http";
-import {AdvanceTable} from "../../advance-table/advance-table.model";
 import {MatMenuModule, MatMenuTrigger} from "@angular/material/menu";
 import { AuthService } from '@core'
 import {FileService} from "@core/service/file.service";
@@ -93,6 +92,7 @@ export class DocumentoComponent extends UnsubscribeOnDestroyAdapter implements O
   contextMenuPosition = { x: '0px', y: '0px' };
 
   ngOnInit(): void {
+    this.paginator._intl.itemsPerPageLabel="Items por página";
     this.loadData()
   }
 
@@ -128,7 +128,7 @@ export class DocumentoComponent extends UnsubscribeOnDestroyAdapter implements O
         this.refreshTable();
         this.showNotification(
           'snackbar-success',
-          'Add Record Successfully...!!!',
+          'Documento Cargado, con exito!',
           'bottom',
           'center'
         );
@@ -170,10 +170,6 @@ export class DocumentoComponent extends UnsubscribeOnDestroyAdapter implements O
           this.exampleDatabase?.dataChange.next([...updatedData]);
           this.loadData()
           this.refreshTable();
-        },
-        error: () => {
-          const mensajeError =  "Error inesperado";
-          this.showNotification('snackbar-danger',mensajeError,'top','center')
         }
       })
   }
@@ -195,25 +191,6 @@ export class DocumentoComponent extends UnsubscribeOnDestroyAdapter implements O
         this.selection.select(row)
       );
   }
-
-  // removeSelectedRows() {
-  //   const totalSelect = this.selection.selected.length;
-  //   this.selection.selected.forEach((item) => {
-  //     const index: number = this.DocumentList.renderedData.findIndex(
-  //       (d) => d === item
-  //     );
-  //     // console.log(this.dataSource.renderedData.findIndex((d) => d === item));
-  //     this.tableServiceService?.dataChange.value.splice(index, 1);
-  //     this.refreshTable();
-  //     this.selection = new SelectionModel<DocumentTable>(true, []);
-  //   });
-  //   this.showNotification(
-  //     'snackbar-danger',
-  //     totalSelect + ' Record Delete Successfully...!!!',
-  //     'bottom',
-  //     'center'
-  //   );
-  // }
 
   public loadData() {
     this.tableServiceService = new FileService(this.httpClient, this.authenticationService)
@@ -247,16 +224,7 @@ export class DocumentoComponent extends UnsubscribeOnDestroyAdapter implements O
     });
   }
 
-  onContextMenu(event: MouseEvent, item: AdvanceTable) {
-    event.preventDefault();
-    this.contextMenuPosition.x = event.clientX + 'px';
-    this.contextMenuPosition.y = event.clientY + 'px';
-    if (this.contextMenu !== undefined && this.contextMenu.menu !== null) {
-      this.contextMenu.menuData = { item: item };
-      this.contextMenu.menu.focusFirstItem('mouse');
-      this.contextMenu.openMenu();
-    }
-  }
+
 
   exportExcel() {
     // key name with space add in brackets

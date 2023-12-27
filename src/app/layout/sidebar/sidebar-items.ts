@@ -46,7 +46,7 @@ export const ROUTES: RouteInfo[] = [
     badgeClass: '',
     submenu: [
       {
-        path: 'dashboard/dashboard1',
+        path: 'disercomi/solicitudes/realizar',
         title: 'DISERCOMI.REQUESTS.LIST.CARRY-OUT',
         iconType: '',
         icon: '',
@@ -57,7 +57,7 @@ export const ROUTES: RouteInfo[] = [
         submenu: [],
       },
       {
-        path: 'dashboard/dashboard2',
+        path: 'disercomi/solicitudes/historial',
         title: 'DISERCOMI.REQUESTS.LIST.RECORD',
         iconType: '',
         icon: '',
@@ -68,7 +68,7 @@ export const ROUTES: RouteInfo[] = [
         submenu: [],
       },
       {
-        path: 'dashboard/dashboard2',
+        path: 'disercomi/solicitudes/reasignar',
         title: 'DISERCOMI.REQUESTS.LIST.REASSIGN',
         iconType: '',
         icon: '',
@@ -91,7 +91,7 @@ export const ROUTES: RouteInfo[] = [
     badgeClass: '',
     submenu: [
       {
-        path: 'dashboard/dashboard2',
+        path: 'disercomi/calificaciones/historial',
         title: 'DISERCOMI.RATINGS.LIST.RECORD',
         iconType: '',
         icon: '',

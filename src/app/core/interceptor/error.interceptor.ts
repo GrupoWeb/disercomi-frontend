@@ -23,17 +23,15 @@ export class ErrorInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       catchError((err: HttpErrorResponse) => {
         if (err.status === 401) {
-          // auto logout if 401 response returned from api
           // this.authenticationService.logout();
           location.reload();
-        }
-
-        if (err.status === 422) {
+        } else if (err.status === 404) {
+          const mensajeError = err.error.mensaje;
+          this.showNotification('snackbar-danger',mensajeError,'top','center')
+        } else if (err.status === 422) {
           const mensajeError = err.error.mensaje || "Error inesperado";
           this.showNotification('snackbar-danger',mensajeError,'top','center')
-        }
-
-        if (err.status === 500) {
+        } else if (err.status === 500) {
           const mensajeError = err.error.mensaje || "Error inesperado";
           this.showNotification('snackbar-danger',mensajeError,'top','center')
         }

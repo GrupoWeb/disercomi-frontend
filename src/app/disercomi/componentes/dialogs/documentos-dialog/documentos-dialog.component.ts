@@ -106,8 +106,7 @@ export class DocumentosDialogComponent implements OnInit{
     }
 
     this.documentFile.setFileDocument(formData).subscribe({
-      next: (d) => {
-        console.log("Exito: " + d)
+      next: () => {
       },
       error: (e: HttpErrorResponse) => {
         console.log(e.name + ' ' + e.message);
@@ -116,7 +115,7 @@ export class DocumentosDialogComponent implements OnInit{
   }
 
   getCatalogos() {
-    this.documentService.getItems().subscribe({
+    this.documentService.getItems('C08').subscribe({
       next: (data) => {
         this.itemCatalogo = data;
       },

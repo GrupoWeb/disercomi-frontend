@@ -85,23 +85,33 @@ export class FileService extends UnsubscribeOnDestroyAdapter {
         tap(() => {
           const updateData = this.dataChange.value.filter(item => item.idArchivo !== idFile)
           this.setData(updateData)
-        }),
+        })
+      )
+  }
+
+  getItems(idCatalogo: string): Observable<ItemsModel[]> {
+    return this.http
+      .get<ItemsModel[]>(`${environment.apiUrl}/catalogos/${idCatalogo}/items`)
+      .pipe(
         catchError((error: HttpErrorResponse) => {
-          console.error(error.name + ' ' + error.message);
           return throwError(error);
         })
       )
   }
 
-  getItems(): Observable<ItemsModel[]> {
-    return this.http
-      .get<ItemsModel[]>(`${environment.apiUrl}/catalogos/C08/items`)
-      .pipe(
-        catchError((error: HttpErrorResponse) => {
-          console.error(error.name + ' ' + error.message);
-          return throwError(error);
-        })
-      )
+  getSolicitudes(idCatalogo: string) {
+    this.subs.sink = this.http
+      .get<ItemsModel[]>(`${environment.apiUrl}/catalogos/${idCatalogo}/items`)
+      .subscribe({
+        next: (d) => {
+          this.isTblLoading = false;
+          this.itemChange.next(d)
+        },
+        error: (e: HttpErrorResponse) => {
+          this.isTblLoading = false;
+          console.log(e.name + ' ' + e.message)
+        }
+      })
   }
 
 }
