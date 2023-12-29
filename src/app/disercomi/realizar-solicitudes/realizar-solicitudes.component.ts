@@ -88,14 +88,12 @@ export class RealizarSolicitudesComponent extends UnsubscribeOnDestroyAdapter im
     return this.loadData()
   }
 
-  detailsCall(row: Contacts) {
+  detailsCall(row: ItemsModel) {
     this.dialog.open(SolicitudDialogComponent, {
       data: {
-        contacts: row,
-        action: 'details',
+        items: row
       },
-      height: '85%',
-      width: '35%',
+      width: '50%',
     });
   }
 

@@ -6,16 +6,39 @@
           <div class="modalHeader m-0">
             <div class="contact-details-heading">
               <div class="contact-details-name">Realizar Solicitud</div>
-              <div class="col-green font-12">Friends</div>
+              <div class="col-green font-16">{{ itemDetails.valor }}</div>
             </div>
           </div>
         </div>
       </div>
 
-      <div mat-dialog-content>
-<!--        <form class="register-form m-4" [formGroup]="solicitudForm!">-->
-
-<!--        </form>-->
+      <div mat-dialog-content >
+        <div class="alert bg-blue align-justify">
+          Al continuar con el proceso usted <strong>ACEPTA SER NOTIFICADO ELECTRÓNICAMENTE</strong> a la dirección de correo registrada en su perfil
+          <strong>¿Desea continuar?</strong>
+        </div>
+          <mat-card-content>
+            <div class="contact-details-field">
+              <i class="material-icons-two-tone color-icon">assignment</i>
+              <div class="contact-detail-info"> {{ itemDetails.valor }}
+              </div>
+            </div>
+            <div class="contact-details-field mb-5">
+              <i class="material-icons-two-tone color-icon">monetization_on</i>
+              <div class="contact-detail-info"> {{ itemDetails.detalle.moneda }} {{ itemDetails.detalle.costo }}
+              </div>
+            </div>
+          </mat-card-content>
+          <mat-card-actions>
+            <div fxLayout="row" class="example-button-row">
+              <button mat-raised-button color="primary" (click)="setSolicitud()">
+                Aceptar
+              </button>
+              <button mat-raised-button color="warn" (click)="onNoClick()">
+                Cancelar
+              </button>
+            </div>
+          </mat-card-actions>
       </div>
     </div>
   }
