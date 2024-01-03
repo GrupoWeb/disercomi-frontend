@@ -22,7 +22,6 @@ import {AuthService} from "@core";
 import {MatDialog} from "@angular/material/dialog";
 import {MatMenuModule, MatMenuTrigger} from "@angular/material/menu";
 import {NgClass} from '@angular/common';
-import {Contacts} from "../../contacts/contacts.model";
 import {SolicitudDialogComponent} from "../componentes/dialogs/solicitud-dialog/solicitud-dialog.component";
 
 @Component({
@@ -106,7 +105,8 @@ export class RealizarSolicitudesComponent extends UnsubscribeOnDestroyAdapter im
     this.ItemsList = new DataSourceFetch(
       this.tableServiceService,
       this.paginator,
-      this.sort
+      this.sort,
+      this.authenticationService
     )
 
     this.subs.sink = fromEvent(this.filter.nativeElement, 'keyup').subscribe(
@@ -162,6 +162,7 @@ export class RealizarSolicitudesComponent extends UnsubscribeOnDestroyAdapter im
 
 export class DataSourceFetch extends DataSource<ItemsModel> {
   filterChange = new BehaviorSubject('');
+  selectedRole = this.authenticationService.currentProfileUserValue;
 
   get filter(): string {
     return this.filterChange.value
@@ -175,9 +176,11 @@ export class DataSourceFetch extends DataSource<ItemsModel> {
   renderedData: ItemsModel[] = [];
 
 
-  constructor(public apiDataBase: FileService,
-              public paginator: MatPaginator,
-              public _sort: MatSort) {
+  constructor(
+      public    apiDataBase: FileService,
+      public    paginator: MatPaginator,
+      public    _sort: MatSort,
+      private   authenticationService: AuthService) {
     super();
     this.filterChange.subscribe(() => (this.paginator.pageIndex = 0));
   }
@@ -204,7 +207,11 @@ export class DataSourceFetch extends DataSource<ItemsModel> {
               itemsModel.detalle.moneda +
               itemsModel.idCatalogo
             ).toLowerCase();
-            return searchStr.indexOf(this.filter.toLowerCase()) !== -1;
+
+            const generalFilter = searchStr.indexOf(this.filter.toLowerCase()) !== -1;
+            const roleFilter = this.selectedRole.idRol ? itemsModel.detalle.rol === this.selectedRole.idRol : true;
+
+            return generalFilter && roleFilter;
           });
         const sortedData = this.sortData(this.filteredData.slice());
         const startIndex = this.paginator.pageIndex * this.paginator.pageSize;

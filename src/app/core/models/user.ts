@@ -25,6 +25,11 @@ export interface RepresentanteLegal {
   currentPassword!: string;
   newPassword!: string;
   confirmPassword!: string;
+  idRol!: string;
+  activo!: string;
+  usuarioAdicion!: string;
+  fechaHoraAdicion!: string;
+  nombreRol!: string;
 
 
   constructor(user: User) {
@@ -50,6 +55,11 @@ export interface RepresentanteLegal {
     this.currentPassword = user.currentPassword || '';
     this.newPassword = user.newPassword || '';
     this.confirmPassword = user.confirmPassword || '';
+    this.idRol = user.idRol || '';
+    this.activo = user.activo || '';
+    this.usuarioAdicion = user.usuarioAdicion || '';
+    this.fechaHoraAdicion = user.fechaHoraAdicion || '';
+    this.nombreRol = user.nombreRol || '';
   }
 }
 

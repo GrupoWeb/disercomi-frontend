@@ -63,6 +63,31 @@ export class AuthService {
 
   }
 
+  getUsuarios(flag: boolean, email: string): Observable<User>{
+    console.log("test")
+    if (flag) {
+      return this.http
+        .get<User>(`${environment.apiUrl}/usuarios`)
+        .pipe(
+          map((user) => {
+            localStorage.setItem('perfil', JSON.stringify(user))
+            this.currentUserSubject.next(user);
+            return user;
+          })
+        )
+    }else {
+      return this.http
+        .get<User>(`${environment.apiUrl}/usuarios?correo=${email}`)
+        .pipe(
+          map((user) => {
+            localStorage.setItem('perfil', JSON.stringify(user))
+            this.currentUserSubject.next(user);
+            return user;
+          })
+        )
+    }
+  }
+
   logout() {
     // remove user from local storage to log user out
     localStorage.removeItem('currentUser');
