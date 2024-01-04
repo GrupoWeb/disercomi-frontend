@@ -7,6 +7,8 @@ import {MatCardModule} from "@angular/material/card";
 import {MatButtonModule} from "@angular/material/button";
 import {MatDividerModule} from "@angular/material/divider";
 import {MatIconModule} from "@angular/material/icon";
+import {SolicitudService} from "@core/service/solicitud.service";
+import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material/snack-bar";
 
 export interface DialogData {
   items: ItemsModel;
@@ -37,7 +39,9 @@ export class SolicitudDialogComponent implements OnInit{
   constructor(
     public dialogRef: MatDialogRef<SolicitudDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    private fb: UntypedFormBuilder
+    private fb: UntypedFormBuilder,
+    private solicitudService: SolicitudService,
+    private snackBar: MatSnackBar
   ) {
     this.dialogTitle = 'New Contacts';
     this.itemDetails = data.items
@@ -52,9 +56,28 @@ export class SolicitudDialogComponent implements OnInit{
   }
 
   setSolicitud() {
-    console.log("Datos " + this.itemDetails.valor)
+    this.solicitudService.setSolicitudExpediente(this.itemDetails.idItem)
+      .subscribe({
+        next: (d) => {
+          this.showNotification('snackbar-success','Solicitud iniciada con éxito','top','center')
+          console.log("Expediente " + d.idExpediente)
+        }
+      })
   }
 
+  showNotification(
+    colorName: string,
+    text: string,
+    placementFrom: MatSnackBarVerticalPosition,
+    placementAlign: MatSnackBarHorizontalPosition
+  ) {
+    this.snackBar.open(text, '', {
+      duration: 2000,
+      verticalPosition: placementFrom,
+      horizontalPosition: placementAlign,
+      panelClass: colorName,
+    });
+  }
   ngOnInit(): void {
 
   }

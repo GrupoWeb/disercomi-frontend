@@ -6,6 +6,7 @@ import { RealizarSolicitudesComponent } from "./realizar-solicitudes/realizar-so
 import { HistorialSolicitudesComponent } from "./historial-solicitudes/historial-solicitudes.component";
 import { ReasignarSolicitudesComponent } from "./reasignar-solicitudes/reasignar-solicitudes.component";
 import { HistorialCalificacionesComponent } from "./historial-calificaciones/historial-calificaciones.component";
+import {IncisosArancelariosComponent} from "./incisos-arancelarios/incisos-arancelarios.component";
 
 const routes: Routes = [
   {
@@ -31,6 +32,10 @@ const routes: Routes = [
   {
     path: 'calificaciones/historial',
     component: HistorialCalificacionesComponent,
+  },
+  {
+    path: 'solicitudes/incisos',
+    component: IncisosArancelariosComponent,
   }
 ];
 

@@ -1,7 +1,7 @@
 <section class="content">
   <div class="content-block">
     <div class="block-header">
-      <app-breadcrumb [title]="'Solicitudes'"  [active_item]="'realizar'" [items]="['solicitudes']">
+      <app-breadcrumb [title]="'Historial de Solicitudes'"  [active_item]="'historial'" [items]="['solicitudes']">
       </app-breadcrumb>
     </div>
     <div class="row">
@@ -55,7 +55,8 @@
 
                 <ng-container matColumnDef="nombreEstado">
                   <mat-header-cell *matHeaderCellDef mat-sort-header>Estado</mat-header-cell>
-                  <mat-cell *matCellDef="let row">{{row.nombreEstado}}</mat-cell>
+                  <mat-cell *matCellDef="let row">
+                    <span class="badge bg-{{ transformarEstado(row) }} badge-pill">{{ row.nombreEstado }}</span></mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="actions">
@@ -66,8 +67,32 @@
                     </button>
                     <mat-menu #menu="matMenu">
                       <button mat-menu-item (click)="detailsCall(row)">
-                        <i class="material-icons-two-tone align-middle msr-2">create</i>
-                        <span>Seleccionar</span>
+                        <i class="material-icons-two-tone align-middle msr-2">assignment</i>
+                        <span>Completar Solicitud</span>
+                      </button>
+                      <button mat-menu-item (click)="detailsCall(row)">
+                        <i class="material-icons-two-tone align-middle msr-2">restore</i>
+                        <span>Historial de Estados</span>
+                      </button>
+                      <button mat-menu-item (click)="detailsCall(row)">
+                        <i class="material-icons-two-tone align-middle msr-2">payment</i>
+                        <span>Descargar Boleta de Pago</span>
+                      </button>
+                      <button mat-menu-item (click)="detailsCall(row)">
+                        <i class="material-icons-two-tone align-middle msr-2">file_upload</i>
+                        <span>Cargar Boleta de Pago</span>
+                      </button>
+                      <button mat-menu-item (click)="detailsCall(row)">
+                        <i class="material-icons-two-tone align-middle msr-2">last_page</i>
+                        <span>Enviar a Revisión</span>
+                      </button>
+                      <button mat-menu-item (click)="detailsCall(row)">
+                        <i class="material-icons-two-tone align-middle msr-2">last_page</i>
+                        <span>Enviar a Revisión</span>
+                      </button>
+                      <button mat-menu-item (click)="detailsCall(row)">
+                        <i class="material-icons-two-tone align-middle msr-2">file_download</i>
+                        <span>Descargar Resolución</span>
                       </button>
                     </mat-menu>
                   </mat-cell>

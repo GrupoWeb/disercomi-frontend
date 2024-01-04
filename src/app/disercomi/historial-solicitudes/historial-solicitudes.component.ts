@@ -2,7 +2,7 @@ import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {BreadcrumbComponent} from "@shared/components/breadcrumb/breadcrumb.component";
 import {MatButtonModule} from "@angular/material/button";
 import {MatIconModule} from "@angular/material/icon";
-import {MatMenuModule, MatMenuTrigger} from "@angular/material/menu";
+import {MatMenuModule} from "@angular/material/menu";
 import {MatPaginator, MatPaginatorModule} from "@angular/material/paginator";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {MatRippleModule} from "@angular/material/core";
@@ -60,6 +60,7 @@ export class HistorialSolicitudesComponent extends UnsubscribeOnDestroyAdapter i
   ItemsList!: DataSourceFetch;
   selection = new SelectionModel<HistorialModel>(true,[])
   formatoFecha!: string;
+  itemsList!: ItemsModel[];
 
   constructor(
     private   tableServiceService: FileService,
@@ -75,6 +76,7 @@ export class HistorialSolicitudesComponent extends UnsubscribeOnDestroyAdapter i
   ngOnInit(): void {
       this.paginator._intl.itemsPerPageLabel="Items por página";
       this.loadData()
+      this.getItems()
     }
 
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
@@ -145,6 +147,19 @@ export class HistorialSolicitudesComponent extends UnsubscribeOnDestroyAdapter i
       'TE02': 'CZF2-',
     }[historialModel.idTipoExpediente] || 'CUZF-';
     return tipoExpedientePrefix + historialModel.idExpediente;
+  }
+
+  getItems(){
+    this.tableServiceService.getItems('C00').subscribe({
+      next: (data) => {
+        this.itemsList = data;
+      }
+    });
+  }
+
+  transformarEstado(_historialModel: HistorialModel): string {
+    const estadoEncontrado = this.itemsList.find(estado => _historialModel.idEstado === estado.idItem);
+    return estadoEncontrado ? estadoEncontrado.detalle.cssColor : "secondary";
   }
 
 }

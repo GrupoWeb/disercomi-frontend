@@ -1,7 +1,11 @@
 export interface detalles {
   costo: number,
   rol: string,
-  moneda: string
+  moneda: string,
+  cssColor: string;
+  cssIcono:string;
+  observacionObligatoria: boolean;
+  idEstadosPrevios: []
 }
 export class ItemsModel {
   idItem: string;

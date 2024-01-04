@@ -1,0 +1,172 @@
+<section class="content">
+  <div class="content-block">
+    <div class="block-header">
+      <app-breadcrumb [title]="'Historial de Solicitudes'"  [active_item]="'historial'" [items]="['solicitudes']">
+      </app-breadcrumb>
+    </div>
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="card">
+          <div class="header">
+            <h2>Solicitud: </h2>
+          </div>
+          <div class="body">
+            <mat-tab-group>
+              <mat-tab>
+                <ng-template mat-tab-label>
+                  <mat-icon class="example-tab-icon msr-2">assignment</mat-icon>
+                  Datos de la Solicitud
+                </ng-template>
+                <br>
+                <form class="register-form m-4" [formGroup]="incisoForm!">
+                  <div class="row">
+                    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                      <mat-form-field class="example-full-width" appearance="outline">
+                        <mat-label>Clasificación Económica</mat-label>
+                        <mat-select formControlName="clasificacionEconomica" required>
+                          <mat-option *ngFor="let item of itemCatalogo" [value]="item.idItem">
+                            {{ item.valor }}
+                          </mat-option>
+                        </mat-select>
+                        <mat-icon class="material-icons-two-tone color-icon p-3" matSuffix>card_travel</mat-icon>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                      <mat-form-field class="example-full-width" appearance="outline">
+                        <mat-label>Representante Legal</mat-label>
+                        <mat-select formControlName="representanteLegal" required>
+                          <mat-option *ngFor="let item of getRepresentantes().representantesLegales" [value]="item.nombre">
+                            {{ item.nombre }}
+                          </mat-option>
+                        </mat-select>
+                        <mat-icon class="material-icons-two-tone color-icon p-3" matSuffix>gavel</mat-icon>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                      <mat-form-field class="example-full-width" appearance="outline">
+                        <mat-label>Área a ocupar (metros²)</mat-label>
+                        <input matInput formControlName="areaOcupada" required>
+                        <mat-icon class="material-icons-two-tone color-icon p-3" matSuffix>open_with</mat-icon>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                      <mat-form-field class="example-full-width" appearance="outline">
+                        <mat-label>Nombre de la Empresa</mat-label>
+                        <input matInput formControlName="nombreEmpresa" required>
+                        <mat-icon class="material-icons-two-tone color-icon p-3" matSuffix>domain</mat-icon>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+                      <mat-form-field class="example-full-width" appearance="outline">
+                        <mat-label>Domicilio Fiscal</mat-label>
+                        <input matInput formControlName="domicilioFiscal" required>
+                        <mat-icon class="material-icons-two-tone color-icon p-3" matSuffix>location_city</mat-icon>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+                      <mat-form-field class="example-full-width" appearance="outline">
+                        <mat-label>Actividad Económica</mat-label>
+                        <textarea matInput formControlName="actividadEconomica" required></textarea>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </form>
+              </mat-tab>
+              <mat-tab>
+                <ng-template mat-tab-label>
+                  <mat-icon class="example-tab-icon msr-2">settings</mat-icon>
+                  Maquinaria y Materiales
+                </ng-template>
+                <br>
+                <div class="text-end">
+                  <button mat-raised-button class="btn-space" color="primary" (click)="addNew()">Agregar</button>
+                  <button mat-raised-button class="btn-space" color="primary" disabled>Completar Solicitud</button>
+
+                </div>
+                <div class="card mt-5">
+                  <div class="body overflow-auto">
+                    <div class="responsive_table">
+                      <table mat-table [dataSource]="itempsTemporalInciso" matSort class="mat-cell advance-table">
+                        <ng-container matColumnDef="codigoInciso">
+                          <mat-header-cell *matHeaderCellDef mat-sort-header>Inciso</mat-header-cell>
+                          <mat-cell *matCellDef="let row">{{row.codigoInciso}}</mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="descripcion">
+                          <mat-header-cell *matHeaderCellDef mat-sort-header>Descripción</mat-header-cell>
+                          <mat-cell *matCellDef="let row">{{row.descripcion}}</mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="nombreComercial">
+                          <mat-header-cell *matHeaderCellDef mat-sort-header>Nombre Comercial</mat-header-cell>
+                          <mat-cell *matCellDef="let row">{{row.nombreComercial}}</mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="cantidad">
+                          <mat-header-cell *matHeaderCellDef mat-sort-header>Cantidad</mat-header-cell>
+                          <mat-cell *matCellDef="let row">{{row.cantidad}}</mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="actions">
+                          <mat-header-cell class="psl-3 tbl-col-width-per-10" *matHeaderCellDef>Acciones</mat-header-cell>
+                          <mat-cell *matCellDef="let row; let i=index;" class="psl-3 tbl-col-width-per-10">
+                            <button mat-icon-button [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
+                              <mat-icon>more_vert</mat-icon>
+                            </button>
+                            <mat-menu #menu="matMenu">
+                              <button mat-menu-item (click)="detailsCall(row)">
+                                <i class="material-icons-two-tone align-middle msr-2">assignment</i>
+                                <span>Completar Solicitud</span>
+                              </button>
+                              <button mat-menu-item (click)="detailsCall(row)">
+                                <i class="material-icons-two-tone align-middle msr-2">restore</i>
+                                <span>Historial de Estados</span>
+                              </button>
+                              <button mat-menu-item (click)="detailsCall(row)">
+                                <i class="material-icons-two-tone align-middle msr-2">payment</i>
+                                <span>Descargar Boleta de Pago</span>
+                              </button>
+                              <button mat-menu-item (click)="detailsCall(row)">
+                                <i class="material-icons-two-tone align-middle msr-2">file_upload</i>
+                                <span>Cargar Boleta de Pago</span>
+                              </button>
+                              <button mat-menu-item (click)="detailsCall(row)">
+                                <i class="material-icons-two-tone align-middle msr-2">last_page</i>
+                                <span>Enviar a Revisión</span>
+                              </button>
+                              <button mat-menu-item (click)="detailsCall(row)">
+                                <i class="material-icons-two-tone align-middle msr-2">last_page</i>
+                                <span>Enviar a Revisión</span>
+                              </button>
+                              <button mat-menu-item (click)="detailsCall(row)">
+                                <i class="material-icons-two-tone align-middle msr-2">file_download</i>
+                                <span>Descargar Resolución</span>
+                              </button>
+                            </mat-menu>
+                          </mat-cell>
+
+                        </ng-container>
+
+                        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="detailsCall(row)"
+                                 [style.cursor]="'pointer'" matRipple>
+                        </mat-row>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </mat-tab>
+            </mat-tab-group>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

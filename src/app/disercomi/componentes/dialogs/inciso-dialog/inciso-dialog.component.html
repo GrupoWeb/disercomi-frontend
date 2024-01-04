@@ -1,0 +1,124 @@
+<div class="addContainer">
+  <div class="modalHeader">
+    <div class="editRowModal">
+      <div class="modalHeader clearfix">
+        <div class="modal-about">
+          {{dialogTitle}}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div mat-dialog-content>
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="card">
+          <div class="materialTableHeader">
+            <div class="left">
+              <ul class="header-buttons-left ms-0">
+                <li class="tbl-search-box">
+                  <label><i class="material-icons search-icon">search</i></label>
+                  <input type="text" placeholder="Buscar"  #filter class="browser-default search-field" aria-label="search box">
+                </li>
+              </ul>
+            </div>
+            <div class="right">
+              <ul class="tbl-export-btn">
+                <li class="tbl-header-btn">
+                  <div class="m-l-10" matTooltip="ADD">
+                    <button mat-mini-fab color="primary" (click)="addNew()">
+                      <mat-icon class="col-white">add</mat-icon>
+                    </button>
+                  </div>
+                </li>
+                <li class="tbl-header-btn">
+                  <div class="m-l-10" matTooltip="REFRESH" (click)="refresh()">
+                    <button mat-mini-fab color="primary" >
+                      <mat-icon class="col-white">refresh</mat-icon>
+                    </button>
+                  </div>
+                </li>
+                <!--                <li class="tbl-header-btn">-->
+                <!--                  <div class="m-l-10" matTooltip="DELETE" [hidden]=!selection.hasValue()>-->
+                <!--                    <button mat-mini-fab color="warn" (click)="removeSelectedRows()">-->
+                <!--                      <mat-icon class="col-white">delete</mat-icon>-->
+                <!--                    </button>-->
+                <!--                  </div>-->
+                <!--                </li>-->
+                <li>
+                  <div class="export-button m-l-10" matTooltip="XLSX" (click)="exportExcel()">
+                    <img src="assets/images/icons/xlsx.png" alt=""  />
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="body overflow-auto">
+            <div class="responsive_table">
+              <table mat-table [dataSource]="incisoList" matSort class="mat-cell advance-table">
+                <ng-container matColumnDef="select">
+                  <mat-header-cell *matHeaderCellDef [ngClass]="'tbl-col-width-per-6'">
+                    <mat-checkbox (change)="$event ? masterToggle() : null"
+                                  [checked]="selection.hasValue() && isAllSelected()"
+                                  [indeterminate]="selection.hasValue() && !isAllSelected()" [ngClass]="'tbl-checkbox'">
+                    </mat-checkbox>
+                  </mat-header-cell>
+                  <mat-cell *matCellDef="let row" [ngClass]="'tbl-col-width-per-6'">
+                    <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+                                  [checked]="selection.isSelected(row)" [ngClass]="'tbl-checkbox'">
+                    </mat-checkbox>
+                  </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="idIncisoArancelario">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Inciso</mat-header-cell>
+                  <mat-cell *matCellDef="let row">{{row.idIncisoArancelario}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="nombre">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Descripción</mat-header-cell>
+                  <mat-cell *matCellDef="let row">{{row.nombre}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                  <mat-header-cell class="pr-0" *matHeaderCellDef>Actions</mat-header-cell>
+                  <mat-cell *matCellDef="let row; let i=index;" class="pr-0">
+                    <button mat-icon-button color="accent" (click)="$event.stopPropagation()"
+                            class="tbl-action-btn">
+                      <app-feather-icons [icon]="'download'" [class]="'tbl-fav-edit'"></app-feather-icons>
+                    </button>
+                    <button mat-icon-button color="accent" (click)="$event.stopPropagation()"
+                            class="tbl-action-btn">
+                      <app-feather-icons [icon]="'trash-2'" [class]="'tbl-fav-delete'"></app-feather-icons>
+                    </button>
+                  </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"
+                         [style.cursor]="'pointer'" matRipple>
+                </mat-row>
+              </table>
+            </div>
+            @if (exampleDatabase?.isTblLoading) {
+              <div class="tbl-spinner">
+                <mat-progress-spinner color="primary" [diameter]="40" mode="indeterminate">
+                </mat-progress-spinner>
+              </div>
+            }
+
+            @if (!exampleDatabase?.isTblLoading) {
+              <div class="no-results"
+                   [style.display]="incisoList.renderedData.length === 0 ? '' : 'none'">
+                Sin resultados
+              </div>
+            }
+            <mat-paginator #paginator [length]="incisoList.filteredData.length" [pageIndex]="0" [pageSize]="5"
+                           [pageSizeOptions]="[5, 10, 25, 100]">
+            </mat-paginator>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

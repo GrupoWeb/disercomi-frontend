@@ -19,10 +19,14 @@ export class FileService extends UnsubscribeOnDestroyAdapter {
   itemChange: BehaviorSubject<ItemsModel[]> = new BehaviorSubject<ItemsModel[]>([])
   historialChange: BehaviorSubject<HistorialModel[]> = new BehaviorSubject<HistorialModel[]>([])
   dialogData!: DocumentTable;
-  constructor(private http: HttpClient, private authService: AuthService,)
+
+
+  constructor(private http: HttpClient, private authService: AuthService,
+              )
   {
     super();
   }
+
 
   setData(data: DocumentTable[]): void {
     this.dataChange.next(data);
@@ -134,5 +138,6 @@ export class FileService extends UnsubscribeOnDestroyAdapter {
         }
       })
   }
+
 
 }
