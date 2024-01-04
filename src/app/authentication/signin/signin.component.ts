@@ -56,8 +56,8 @@ export class SigninComponent
 
   }
 
-  getUsers(){
-    this.authService.getUsuarios(false, 'impuestos@distelsa.com.gt')
+  getUsers(email: string){
+    this.authService.getUsuarios(false, email)
       .subscribe()
   }
 
@@ -78,7 +78,7 @@ export class SigninComponent
                 const token = this.authService.currentUserValue.token;
                 if (token) {
                   this.setProfileUser()
-                  this.getUsers()
+                  this.getUsers(this.authService.currentProfileUserValue.correo)
                   this.router.navigate(['/disercomi/perfil']);
                 }
               } else {

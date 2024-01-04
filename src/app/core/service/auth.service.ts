@@ -9,10 +9,12 @@ import { environment } from 'environments/environment';
   providedIn: 'root',
 })
 export class AuthService {
-  private currentUserSubject: BehaviorSubject<User>;
-  public currentUser: Observable<User>;
-  public currentProfileUser: Observable<User>
-  private currentUserProfile: BehaviorSubject<User>;
+  private   currentUserSubject: BehaviorSubject<User>;
+  public    currentUser: Observable<User>;
+  public    currentProfileUsers: Observable<User[]>
+  private   currentUsersProfile: BehaviorSubject<User[]>;
+  public    currentProfileUser: Observable<User>
+  private   currentUserProfile: BehaviorSubject<User>;
 
   constructor(private http: HttpClient) {
     this.currentUserSubject = new BehaviorSubject<User>(
@@ -24,6 +26,11 @@ export class AuthService {
       JSON.parse(localStorage.getItem('perfil') || '{}') as User
     )
     this.currentProfileUser = this.currentUserProfile.asObservable();
+
+    this.currentUsersProfile = new  BehaviorSubject<User[]>(
+      JSON.parse(localStorage.getItem('usuarios') || '{}') as User[]
+    )
+    this.currentProfileUsers = this.currentUsersProfile.asObservable();
   }
 
   public get currentUserValue(): User {
@@ -32,6 +39,15 @@ export class AuthService {
 
   public get currentProfileUserValue(): User {
     return this.currentUserProfile.value;
+  }
+
+  public get currentProfileUsersValue(): User {
+    const users =  this.currentUsersProfile.value;
+    if (users && users.length > 0) {
+      return users[0]
+    }
+
+    return {} as User;
   }
 
 
@@ -63,25 +79,24 @@ export class AuthService {
 
   }
 
-  getUsuarios(flag: boolean, email: string): Observable<User>{
-    console.log("test")
+  getUsuarios(flag: boolean, email: string): Observable<User[]>{
     if (flag) {
       return this.http
-        .get<User>(`${environment.apiUrl}/usuarios`)
+        .get<User[]>(`${environment.apiUrl}/usuarios`)
         .pipe(
           map((user) => {
-            localStorage.setItem('perfil', JSON.stringify(user))
-            this.currentUserSubject.next(user);
+            localStorage.setItem('usuarios', JSON.stringify(user))
+            this.currentUsersProfile.next(user);
             return user;
           })
         )
     }else {
       return this.http
-        .get<User>(`${environment.apiUrl}/usuarios?correo=${email}`)
+        .get<User[]>(`${environment.apiUrl}/usuarios?correo=${email}`)
         .pipe(
           map((user) => {
-            localStorage.setItem('perfil', JSON.stringify(user))
-            this.currentUserSubject.next(user);
+            localStorage.setItem('usuarios', JSON.stringify(user))
+            this.currentUsersProfile.next(user);
             return user;
           })
         )
@@ -90,8 +105,9 @@ export class AuthService {
 
   logout() {
     // remove user from local storage to log user out
-    localStorage.removeItem('currentUser');
+    localStorage.clear()
     this.currentUserSubject.next(this.currentUserValue);
+    this.currentUserSubject.next(this.currentProfileUserValue);
     return of({ success: false });
   }
 }

@@ -13,15 +13,15 @@
             <div class="contact-grid">
               <div class="profile-header bg-c-blue">
                 <div class="user-name">{{ setProfileUser().nombre }}</div>
-                <div class="name-center">{{ setProfileUser().nit }}</div>
               </div>
               <img src="assets/images/user/user_perfil.png" class="user-img" alt="">
+              <div class="name-center">NIT: {{ setProfileUser().nit }}</div>
               <p>
                 {{ setProfileUser().correo }}
               </p>
               <div>
                 <span class="phone">
-                  <i class="material-icons">phone</i>2412-0200 ext. 3101</span>
+                  <i class="material-icons">phone</i>{{ setProfileUser().telefono }}</span>
               </div>
             </div>
           </div>
@@ -98,17 +98,17 @@
               <div class="col-lg-12 col-md-12 col-sm-12" *ngIf = "setProfileUser().representantesLegales">
                 <div class="project_widget">
                   <div class="header">
-                    <h2><strong>Representante Legal</strong></h2>
+                    <h2><strong>Representantes Legales</strong></h2>
                   </div>
                   <div class="body">
                     <div class="row" *ngFor="let user of setProfileUser().representantesLegales">
-                      <div class="col-md-4 col-6 b-r">
-                        <strong>Nit</strong>
+                      <div class="col-md-6 col-6 b-r">
+                        <strong>Nit Representante</strong>
                         <br>
                         <p class="text-muted">{{ user.nit }}</p>
                       </div>
-                      <div class="col-md-4 col-6 b-r">
-                        <strong>Nombre</strong>
+                      <div class="col-md-6 col-6 b-r">
+                        <strong>Nombre Representante</strong>
                         <br>
                         <p class="text-muted">{{ user.nombre }}</p>
                       </div>

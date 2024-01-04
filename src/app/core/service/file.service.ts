@@ -6,6 +6,7 @@ import {BehaviorSubject, catchError, Observable, tap, throwError} from "rxjs";
 import {DocumentTable} from "@core/models/TablesModels/document-table.model";
 import {ItemsModel} from "@core/models/Items.model";
 import {AuthService} from "@core";
+import {HistorialModel} from "@core/models/historial.model";
 
 @Injectable({
   providedIn: 'root',
@@ -16,6 +17,7 @@ export class FileService extends UnsubscribeOnDestroyAdapter {
   isTblLoading = true;
   dataChange: BehaviorSubject<DocumentTable[]> = new BehaviorSubject<DocumentTable[]>([])
   itemChange: BehaviorSubject<ItemsModel[]> = new BehaviorSubject<ItemsModel[]>([])
+  historialChange: BehaviorSubject<HistorialModel[]> = new BehaviorSubject<HistorialModel[]>([])
   dialogData!: DocumentTable;
   constructor(private http: HttpClient, private authService: AuthService,)
   {
@@ -32,6 +34,9 @@ export class FileService extends UnsubscribeOnDestroyAdapter {
 
   get items(): ItemsModel[] {
     return this.itemChange.value
+  }
+  get historial(): HistorialModel[] {
+    return this.historialChange.value
   }
 
   getDialogData() {
@@ -97,6 +102,22 @@ export class FileService extends UnsubscribeOnDestroyAdapter {
           return throwError(error);
         })
       )
+  }
+
+  getHistorial(idUsuario: number) {
+    return this.http
+      .get<HistorialModel[]>(`${environment.apiUrl}/expedientes/usuario/${idUsuario}`)
+      .subscribe({
+        next: (d) => {
+          this.isTblLoading = false;
+          this.historialChange.next(d)
+        },
+        error: (e: HttpErrorResponse) => {
+          this.isTblLoading = false;
+          console.log(e.name + ' ' + e.message)
+        }
+      })
+
   }
 
   getSolicitudes(idCatalogo: string) {

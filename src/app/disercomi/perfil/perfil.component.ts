@@ -60,7 +60,7 @@ export class PerfilComponent implements OnInit{
     this.setProfileUser()
   }
   setProfileUser(): User{
-    return this.authService.currentProfileUserValue;
+    return this.authService.currentProfileUsersValue;
   }
   createUserForm(): UntypedFormGroup {
     return this.fb.group(

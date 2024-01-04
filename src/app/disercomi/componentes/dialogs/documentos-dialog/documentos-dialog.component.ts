@@ -22,6 +22,7 @@ import {ItemsModel} from "@core/models/Items.model";
 import { HttpErrorResponse } from "@angular/common/http";
 import { CommonModule } from '@angular/common';
 import { FileService } from "@core/service/file.service";
+import {HistorialModel} from "@core/models/historial.model";
 
 export interface DialogData {
   id: number;
@@ -58,6 +59,7 @@ export class DocumentosDialogComponent implements OnInit{
   documentForm: UntypedFormGroup;
   advanceDocument: DocumentModel;
   itemCatalogo!: ItemsModel[];
+  itemsExpediente!: HistorialModel[];
 
 
   constructor(
@@ -124,6 +126,8 @@ export class DocumentosDialogComponent implements OnInit{
       }
     });
   }
+
+
 
   ngOnInit(): void {
     this.getCatalogos()
