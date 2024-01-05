@@ -41,6 +41,11 @@
                   <mat-cell *matCellDef="let row">{{row.valor}}</mat-cell>
                 </ng-container>
 
+                <ng-container matColumnDef="descripcion">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Tipo</mat-header-cell>
+                  <mat-cell *matCellDef="let row">{{row.descripcion}}</mat-cell>
+                </ng-container>
+
                 <ng-container matColumnDef="costo">
                   <mat-header-cell *matHeaderCellDef mat-sort-header>Costo</mat-header-cell>
                   <mat-cell *matCellDef="let row">$ {{row.detalle.costo}}</mat-cell>

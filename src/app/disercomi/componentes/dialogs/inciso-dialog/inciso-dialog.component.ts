@@ -20,13 +20,13 @@ import {DataSource, SelectionModel} from "@angular/cdk/collections";
 import {IncisosModel} from "@core/models/incisos.model";
 import {BehaviorSubject, fromEvent, merge, Observable} from "rxjs";
 import {map} from "rxjs/operators";
-import {DialogData, DocumentosDialogComponent} from "../documentos-dialog/documentos-dialog.component";
+import {DialogData } from "../documentos-dialog/documentos-dialog.component";
 import {UnsubscribeOnDestroyAdapter} from "@shared";
 import {FileService} from "@core/service/file.service";
 import {HttpClient} from "@angular/common/http";
-import {AuthService} from "@core";
 import {MatMenuTrigger} from "@angular/material/menu";
 import {Direction} from "@angular/cdk/bidi";
+import {IncisoDetalleComponent} from "../inciso-detalle/inciso-detalle.component";
 
 @Component({
   selector: 'app-inciso-dialog',
@@ -68,6 +68,8 @@ export class IncisoDialogComponent extends UnsubscribeOnDestroyAdapter implement
     'nombre',
   ];
   exampleDatabase?: FileService
+  cantidadIncisos!: number;
+  incisosSeleccionados: IncisosModel[] = []
 
 
   constructor(
@@ -79,6 +81,7 @@ export class IncisoDialogComponent extends UnsubscribeOnDestroyAdapter implement
   ) {
     super()
     this.dialogTitle = 'Agregar Incisos de Maquinaria y Materiales';
+    this.cantidadIncisos = 0
   }
 
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
@@ -121,9 +124,7 @@ export class IncisoDialogComponent extends UnsubscribeOnDestroyAdapter implement
   }
 
   confirmAdd() {
-    this.selection.selected.forEach((item) => {
-      console.log("data "+ item.idIncisoArancelario)
-    })
+    this.dialogRef.close(this.incisosSeleccionados)
   }
 
   masterToggle() {
@@ -132,17 +133,22 @@ export class IncisoDialogComponent extends UnsubscribeOnDestroyAdapter implement
       : this.incisoList.renderedData.forEach((row) =>
         this.selection.select(row)
       );
+    this.cantidadIncisos = this.selection.selected.length
+
   }
 
   onRowCheckboxChange(event: MatCheckboxChange, row: IncisosModel): void {
-    // Realiza la acción que deseas cuando se selecciona una fila
     if (event.checked) {
-      console.log('Fila seleccionada:', row);
-      // Agrega aquí tu lógica adicional
+      this.cantidadIncisos = this.selection.selected.length + 1
+      this.modaRegistroInciso(row)
+
+    }else {
+      this.cantidadIncisos = this.selection.selected.length - 1
+      this.eliminarItemsIncisos(row)
     }
 
-    // Realiza la lógica de selección/deselección de la fila
     this.selection.toggle(row);
+
   }
   isAllSelected() {
     const numSelected = this.selection.selected.length;
@@ -150,7 +156,7 @@ export class IncisoDialogComponent extends UnsubscribeOnDestroyAdapter implement
     return numSelected === numRows;
   }
 
-  modaRegistroInciso() {
+  modaRegistroInciso(row: IncisosModel) {
     let tempDirection: Direction;
     if (localStorage.getItem('isRtl') === 'true') {
       tempDirection = 'rtl';
@@ -158,13 +164,27 @@ export class IncisoDialogComponent extends UnsubscribeOnDestroyAdapter implement
       tempDirection = 'ltr';
     }
 
-    const dialogRef = this.dialog.open(DocumentosDialogComponent, {
+    const dialogRef = this.dialog.open(IncisoDetalleComponent, {
       data: {
-        advanceTable: this._incisosService},
+        advanceTable: this._incisosService,
+        idIncisoArancelario: row.idIncisoArancelario,
+        descripcion: row.nombre,
+      },
       width: '650px',
       disableClose: true,
       direction: tempDirection,
     });
+
+    this.subs.sink = dialogRef.afterClosed().subscribe((result) => {
+      this.incisosSeleccionados?.push(result)
+    });
+  }
+
+  eliminarItemsIncisos(row: IncisosModel){
+    const index = this.incisosSeleccionados.findIndex(c => c.idIncisoArancelario === row.idIncisoArancelario);
+    if (index !== -1) {
+      this.incisosSeleccionados.splice(index, 1)
+    }
   }
 
 }

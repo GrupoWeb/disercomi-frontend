@@ -18,11 +18,12 @@ import {UnsubscribeOnDestroyAdapter} from "@shared";
 import {MatMenuModule} from "@angular/material/menu";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {ItemsModel} from "@core/models/Items.model";
-import {NgForOf} from "@angular/common";
+import {CommonModule, NgForOf} from "@angular/common";
 import {AuthService, User} from "@core";
 import {Direction} from "@angular/cdk/bidi";
 import {MatDialog} from "@angular/material/dialog";
 import {IncisoDialogComponent} from "../componentes/dialogs/inciso-dialog/inciso-dialog.component";
+import {IncisosModel} from "@core/models/incisos.model";
 
 
 @Component({
@@ -45,6 +46,7 @@ import {IncisoDialogComponent} from "../componentes/dialogs/inciso-dialog/inciso
     MatMenuModule,
     MatTooltipModule,
     NgForOf,
+    CommonModule,
   ],
   templateUrl: './incisos-arancelarios.component.html',
   styleUrl: './incisos-arancelarios.component.scss'
@@ -52,27 +54,27 @@ import {IncisoDialogComponent} from "../componentes/dialogs/inciso-dialog/inciso
 export class IncisosArancelariosComponent extends UnsubscribeOnDestroyAdapter implements OnInit {
 
   displayedColumns = [
-    'codigoInciso',
+    'idIncisoArancelario',
     'descripcion',
-    'nombreComercial',
+    'nombre',
     'cantidad',
     'actions'
   ];
-  incisoForm?: UntypedFormGroup;
+  incisoForm: UntypedFormGroup;
   expedienteItems: ExpedienteModel;
   temporalForm?: UntypedFormGroup;
   incisoTemporal!: IncisoTemporalModel;
-  itempsTemporalInciso!: IncisoTemporalModel[];
+  itempsTemporalInciso: IncisosModel[] = [];
   itemCatalogo!: ItemsModel[];
-  itemSat!: any;
+  color: string
 
 
   constructor(
     private fb: UntypedFormBuilder,
     private snackBar: MatSnackBar,
-    public    apiDataBase: FileService,
+    public  apiDataBase: FileService,
     private authService: AuthService,
-    public dialog: MatDialog,
+    public  dialog: MatDialog,
   ) {
     super();
     const blackObject = {} as ExpedienteModel;
@@ -82,6 +84,7 @@ export class IncisosArancelariosComponent extends UnsubscribeOnDestroyAdapter im
     const blackObjectInciso = {} as IncisoTemporalModel;
     this.incisoTemporal = new IncisoTemporalModel(blackObjectInciso)
     this.temporalForm = this.createFormTemporal()
+    this.color =  '#1484C9'
   }
 
   createFormInciso(): UntypedFormGroup {
@@ -143,22 +146,10 @@ export class IncisosArancelariosComponent extends UnsubscribeOnDestroyAdapter im
       direction: tempDirection,
     });
 
-    this.subs.sink = dialogRef.afterClosed().subscribe(() => {
-      // if (result === 1) {
-      //   const updatedData = this.tableServiceService.data;
-      //
-      //   this.exampleDatabase?.dataChange.value.unshift(
-      //     ...updatedData
-      //   );
-      //   this.loadData()
-      //   this.refreshTable();
-      //   this.showNotification(
-      //     'snackbar-success',
-      //     'Documento Cargado, con exito!',
-      //     'bottom',
-      //     'center'
-      //   );
-      // }
+    this.subs.sink = dialogRef.afterClosed().subscribe((r) => {
+      console.log("Data " + JSON.stringify(r))
+      this.itempsTemporalInciso = [...this.itempsTemporalInciso, ...r];
+
     });
   }
 

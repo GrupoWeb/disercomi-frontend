@@ -49,6 +49,7 @@ export class RealizarSolicitudesComponent extends UnsubscribeOnDestroyAdapter im
 
   displayedColumns = [
     'valor',
+    'descripcion',
     'costo',
     'moneda',
     'actions'
