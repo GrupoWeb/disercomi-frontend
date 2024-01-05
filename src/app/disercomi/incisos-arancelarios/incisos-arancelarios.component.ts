@@ -138,7 +138,7 @@ export class IncisosArancelariosComponent extends UnsubscribeOnDestroyAdapter im
         advanceTable: this.apiDataBase,
         action: 'add',
       },
-      width: '50%',
+      width: '70%',
       disableClose: true,
       direction: tempDirection,
     });

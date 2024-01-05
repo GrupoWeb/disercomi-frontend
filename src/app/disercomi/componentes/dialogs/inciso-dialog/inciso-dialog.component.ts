@@ -2,14 +2,14 @@ import {Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
 import {FileUploadComponent} from "@shared/components/file-upload/file-upload.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatButtonModule} from "@angular/material/button";
-import {MAT_DIALOG_DATA, MatDialogContent, MatDialogRef} from "@angular/material/dialog";
+import {MAT_DIALOG_DATA, MatDialog, MatDialogClose, MatDialogContent, MatDialogRef} from "@angular/material/dialog";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatOptionModule, MatRippleModule} from "@angular/material/core";
 import {MatSelectModule} from "@angular/material/select";
 import {CommonModule, NgForOf} from "@angular/common";
 import {IncisosService} from "@core/service/incisos.service";
 import {FeatherIconsComponent} from "@shared/components/feather-icons/feather-icons.component";
-import {MatCheckboxModule} from "@angular/material/checkbox";
+import {MatCheckboxChange, MatCheckboxModule} from "@angular/material/checkbox";
 import {MatIconModule} from "@angular/material/icon";
 import {MatPaginator, MatPaginatorModule} from "@angular/material/paginator";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
@@ -20,12 +20,13 @@ import {DataSource, SelectionModel} from "@angular/cdk/collections";
 import {IncisosModel} from "@core/models/incisos.model";
 import {BehaviorSubject, fromEvent, merge, Observable} from "rxjs";
 import {map} from "rxjs/operators";
-import {DialogData} from "../documentos-dialog/documentos-dialog.component";
+import {DialogData, DocumentosDialogComponent} from "../documentos-dialog/documentos-dialog.component";
 import {UnsubscribeOnDestroyAdapter} from "@shared";
 import {FileService} from "@core/service/file.service";
 import {HttpClient} from "@angular/common/http";
 import {AuthService} from "@core";
 import {MatMenuTrigger} from "@angular/material/menu";
+import {Direction} from "@angular/cdk/bidi";
 
 @Component({
   selector: 'app-inciso-dialog',
@@ -49,7 +50,9 @@ import {MatMenuTrigger} from "@angular/material/menu";
     MatSortModule,
     MatTableModule,
     MatTooltipModule,
-    CommonModule
+    CommonModule,
+    MatDialogClose,
+
   ],
   templateUrl: './inciso-dialog.component.html',
   styleUrl: './inciso-dialog.component.scss'
@@ -63,7 +66,6 @@ export class IncisoDialogComponent extends UnsubscribeOnDestroyAdapter implement
     'select',
     'idIncisoArancelario',
     'nombre',
-    'actions',
   ];
   exampleDatabase?: FileService
 
@@ -73,6 +75,7 @@ export class IncisoDialogComponent extends UnsubscribeOnDestroyAdapter implement
     public httpClient: HttpClient,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     public dialogRef: MatDialogRef<IncisoDialogComponent>,
+    public dialog: MatDialog,
   ) {
     super()
     this.dialogTitle = 'Agregar Incisos de Maquinaria y Materiales';
@@ -113,6 +116,16 @@ export class IncisoDialogComponent extends UnsubscribeOnDestroyAdapter implement
 
   addNew() {}
 
+  onNoClick(): void {
+    this.dialogRef.close()
+  }
+
+  confirmAdd() {
+    this.selection.selected.forEach((item) => {
+      console.log("data "+ item.idIncisoArancelario)
+    })
+  }
+
   masterToggle() {
     this.isAllSelected()
       ? this.selection.clear()
@@ -121,10 +134,37 @@ export class IncisoDialogComponent extends UnsubscribeOnDestroyAdapter implement
       );
   }
 
+  onRowCheckboxChange(event: MatCheckboxChange, row: IncisosModel): void {
+    // Realiza la acción que deseas cuando se selecciona una fila
+    if (event.checked) {
+      console.log('Fila seleccionada:', row);
+      // Agrega aquí tu lógica adicional
+    }
+
+    // Realiza la lógica de selección/deselección de la fila
+    this.selection.toggle(row);
+  }
   isAllSelected() {
     const numSelected = this.selection.selected.length;
     const numRows = this.incisoList.renderedData.length;
     return numSelected === numRows;
+  }
+
+  modaRegistroInciso() {
+    let tempDirection: Direction;
+    if (localStorage.getItem('isRtl') === 'true') {
+      tempDirection = 'rtl';
+    } else {
+      tempDirection = 'ltr';
+    }
+
+    const dialogRef = this.dialog.open(DocumentosDialogComponent, {
+      data: {
+        advanceTable: this._incisosService},
+      width: '650px',
+      disableClose: true,
+      direction: tempDirection,
+    });
   }
 
 }

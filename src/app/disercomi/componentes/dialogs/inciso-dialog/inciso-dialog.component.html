@@ -24,16 +24,16 @@
             <div class="right">
               <ul class="tbl-export-btn">
                 <li class="tbl-header-btn">
-                  <div class="m-l-10" matTooltip="ADD">
-                    <button mat-mini-fab color="primary" (click)="addNew()">
-                      <mat-icon class="col-white">add</mat-icon>
+                  <div class="m-l-10" matTooltip="ACEPTAR">
+                    <button mat-mini-fab color="primary" (click)="confirmAdd()">
+                      <mat-icon class="col-white">done</mat-icon>
                     </button>
                   </div>
                 </li>
                 <li class="tbl-header-btn">
-                  <div class="m-l-10" matTooltip="REFRESH" (click)="refresh()">
-                    <button mat-mini-fab color="primary" >
-                      <mat-icon class="col-white">refresh</mat-icon>
+                  <div class="m-l-10" matTooltip="CANCELAR" (click)="onNoClick()">
+                    <button mat-mini-fab color="warn" >
+                      <mat-icon class="col-white">close</mat-icon>
                     </button>
                   </div>
                 </li>
@@ -44,17 +44,12 @@
                 <!--                    </button>-->
                 <!--                  </div>-->
                 <!--                </li>-->
-                <li>
-                  <div class="export-button m-l-10" matTooltip="XLSX" (click)="exportExcel()">
-                    <img src="assets/images/icons/xlsx.png" alt=""  />
-                  </div>
-                </li>
               </ul>
             </div>
           </div>
           <div class="body overflow-auto">
             <div class="responsive_table">
-              <table mat-table [dataSource]="incisoList" matSort class="mat-cell advance-table">
+              <table mat-table [dataSource]="incisoList" matSort class="mat-cell advance-table table-inciso">
                 <ng-container matColumnDef="select">
                   <mat-header-cell *matHeaderCellDef [ngClass]="'tbl-col-width-per-6'">
                     <mat-checkbox (change)="$event ? masterToggle() : null"
@@ -63,7 +58,7 @@
                     </mat-checkbox>
                   </mat-header-cell>
                   <mat-cell *matCellDef="let row" [ngClass]="'tbl-col-width-per-6'">
-                    <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+                    <mat-checkbox (click)="$event.stopPropagation()" (change)="onRowCheckboxChange($event, row)"
                                   [checked]="selection.isSelected(row)" [ngClass]="'tbl-checkbox'">
                     </mat-checkbox>
                   </mat-cell>
@@ -79,19 +74,6 @@
                   <mat-cell *matCellDef="let row">{{row.nombre}}</mat-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="actions">
-                  <mat-header-cell class="pr-0" *matHeaderCellDef>Actions</mat-header-cell>
-                  <mat-cell *matCellDef="let row; let i=index;" class="pr-0">
-                    <button mat-icon-button color="accent" (click)="$event.stopPropagation()"
-                            class="tbl-action-btn">
-                      <app-feather-icons [icon]="'download'" [class]="'tbl-fav-edit'"></app-feather-icons>
-                    </button>
-                    <button mat-icon-button color="accent" (click)="$event.stopPropagation()"
-                            class="tbl-action-btn">
-                      <app-feather-icons [icon]="'trash-2'" [class]="'tbl-fav-delete'"></app-feather-icons>
-                    </button>
-                  </mat-cell>
-                </ng-container>
                 <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
                 <mat-row *matRowDef="let row; columns: displayedColumns;"
                          [style.cursor]="'pointer'" matRipple>
