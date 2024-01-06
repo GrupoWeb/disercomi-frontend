@@ -23,6 +23,8 @@ import {MatDialog} from "@angular/material/dialog";
 import {MatMenuModule, MatMenuTrigger} from "@angular/material/menu";
 import {NgClass} from '@angular/common';
 import {SolicitudDialogComponent} from "../componentes/dialogs/solicitud-dialog/solicitud-dialog.component";
+import {SolicitudService} from "@core/service/solicitud.service";
+import {ExpedienteModel} from "@core/models/expediente.model";
 
 @Component({
   selector: 'app-realizar-solicitudes',
@@ -63,12 +65,11 @@ export class RealizarSolicitudesComponent extends UnsubscribeOnDestroyAdapter im
 
   constructor(
     private   tableServiceService: FileService,
-    private   fileService: FileService,
     public    httpClient: HttpClient,
     private   snackBar: MatSnackBar,
     private   authenticationService: AuthService,
     public    dialog: MatDialog,
-    private   advanceService: FileService
+    private   _expedienteService: SolicitudService
   ) {
     super();
   }
@@ -107,7 +108,8 @@ export class RealizarSolicitudesComponent extends UnsubscribeOnDestroyAdapter im
       this.tableServiceService,
       this.paginator,
       this.sort,
-      this.authenticationService
+      this.authenticationService,
+      this._expedienteService
     )
 
     this.subs.sink = fromEvent(this.filter.nativeElement, 'keyup').subscribe(
@@ -165,6 +167,8 @@ export class DataSourceFetch extends DataSource<ItemsModel> {
   filterChange = new BehaviorSubject('');
   selectedRole = this.authenticationService.currentProfileUserValue;
 
+
+
   get filter(): string {
     return this.filterChange.value
   }
@@ -175,15 +179,19 @@ export class DataSourceFetch extends DataSource<ItemsModel> {
 
   filteredData: ItemsModel[] = [];
   renderedData: ItemsModel[] = [];
+  expedienteUsuario: ExpedienteModel[] = []
 
 
   constructor(
       public    apiDataBase: FileService,
       public    paginator: MatPaginator,
       public    _sort: MatSort,
-      private   authenticationService: AuthService) {
+      private   authenticationService: AuthService,
+      private   _ExpedienteService: SolicitudService) {
     super();
     this.filterChange.subscribe(() => (this.paginator.pageIndex = 0));
+
+
   }
 
   connect(): Observable<ItemsModel[]> {
@@ -192,10 +200,14 @@ export class DataSourceFetch extends DataSource<ItemsModel> {
       this._sort.sortChange,
       this.filterChange,
       this.paginator.page,
+      this._ExpedienteService.currentExpediente
     ];
+
     this.apiDataBase.getSolicitudes('C03')
+    this._ExpedienteService.getExpedientesPorUsuario(65)
     return merge(...displayDataChanges).pipe(
       map(() => {
+        this.expedienteUsuario = this._ExpedienteService.ExpedientesUsuario
         this.filteredData = this.apiDataBase.items
           .slice()
           .filter((itemsModel: ItemsModel) => {
@@ -214,6 +226,38 @@ export class DataSourceFetch extends DataSource<ItemsModel> {
 
             return generalFilter && roleFilter;
           });
+
+        /**
+          Inicio del filtro para verificar Fase 1 y Fase 2
+         **/
+        const expedienteEnProceso = this.expedienteUsuario.some((expediente) => {
+          return (expediente.idTipoExpediente === 'TE01' || expediente.idTipoExpediente === 'TE02') && expediente.idEstado === 'EB00';
+        });
+
+        if (expedienteEnProceso) {
+          // Excluir elementos con expedientes en proceso (TE01 o TE02 en estado EB00)
+          this.filteredData = this.filteredData.filter((itemsModel: ItemsModel) => {
+            return !this.expedienteUsuario.some((expediente) => {
+              return (
+                (expediente.idTipoExpediente === 'TE01' || expediente.idTipoExpediente === 'TE02') &&
+                expediente.idEstado === 'EB00' &&
+                itemsModel.idItem === expediente.idTipoExpediente
+              );
+            });
+          });
+        } else {
+          // Mostrar todos los elementos si no hay expedientes en proceso
+          this.filteredData = this.filteredData.slice();
+        }
+
+        this.filteredData = this.filteredData.filter((itemsModel: ItemsModel) => {
+          return !this.expedienteUsuario.some((expediente) => {
+            return expediente.idTipoExpediente === 'TE01' && expediente.idEstado !== 'EB00' && itemsModel.idItem === expediente.idTipoExpediente;
+          });
+        });
+
+
+
         const sortedData = this.sortData(this.filteredData.slice());
         const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
         this.renderedData = sortedData.splice(

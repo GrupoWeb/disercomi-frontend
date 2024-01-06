@@ -1,6 +1,6 @@
 import {UnsubscribeOnDestroyAdapter} from "@shared";
 import {Injectable} from "@angular/core";
-import {BehaviorSubject, Observable} from "rxjs";
+import {BehaviorSubject, Observable, map} from "rxjs";
 import {ExpedienteModel} from "@core/models/expediente.model";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
@@ -11,11 +11,13 @@ export class SolicitudService extends UnsubscribeOnDestroyAdapter {
 
   isTblLoading = true;
   itemsSolicitud: BehaviorSubject<ExpedienteModel[]> = new BehaviorSubject<ExpedienteModel[]>([]);
+  currentExpediente: BehaviorSubject<ExpedienteModel[]> = new BehaviorSubject<ExpedienteModel[]>([])
 
 
   constructor(
     private http: HttpClient,
   ) {
+
     super();
   }
 
@@ -27,8 +29,22 @@ export class SolicitudService extends UnsubscribeOnDestroyAdapter {
     return this.itemsSolicitud.value;
   }
 
+  get ExpedientesUsuario(): ExpedienteModel[] {
+    return this.currentExpediente.value;
+  }
+
   setSolicitudExpediente(idExpediente: string): Observable<ExpedienteModel> {
     return this.http
       .post<ExpedienteModel>(`${environment.apiUrl}/solicitudes/iniciar/${idExpediente}`,{})
+  }
+
+  getExpedientesPorUsuario(idUsuario: number) {
+    this.subs.sink = this.http
+      .get<ExpedienteModel[]>(`${environment.apiUrl}/expedientes/usuario/${idUsuario}`)
+      .subscribe({
+        next: (d) => {
+          this.currentExpediente.next(d)
+        }
+      })
   }
 }

@@ -9,10 +9,14 @@ export class ExpedienteModel {
   areaAsignada: string;
   domicilioFiscal: string;
   nombreEmpresa: string;
+  nombreEstado: string;
+  nombreUsuario: string;
+  nombreTipoExpediente: string;
+  nitUsuario: string;
   representanteLegal: string;
   clasificacionEconomica: string;
   idEstado: string;
-  idtipoExpediente: string;
+  idTipoExpediente: string;
   idUsuario: number;
   usuarioAsignacion: number;
 
@@ -30,8 +34,12 @@ export class ExpedienteModel {
     this.representanteLegal = expedienteModel.representanteLegal;
     this.clasificacionEconomica = expedienteModel.clasificacionEconomica;
     this.idEstado = expedienteModel.idEstado;
-    this.idtipoExpediente = expedienteModel.idtipoExpediente;
+    this.idTipoExpediente = expedienteModel.idTipoExpediente;
     this.idUsuario = expedienteModel.idUsuario;
     this.usuarioAsignacion = expedienteModel.usuarioAsignacion;
+    this.nombreEstado = expedienteModel.nombreEstado;
+    this.nombreUsuario = expedienteModel.nombreUsuario;
+    this.nombreTipoExpediente = expedienteModel.nombreTipoExpediente;
+    this.nitUsuario = expedienteModel.nitUsuario;
   }
 }
