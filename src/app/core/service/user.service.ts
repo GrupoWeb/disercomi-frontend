@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {UnsubscribeOnDestroyAdapter} from "@shared";
 import {environment} from "../../../environments/environment";
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import { Messsages } from '@core/models/messsages'
 import {User} from "@core";
 import {Observable} from "rxjs";

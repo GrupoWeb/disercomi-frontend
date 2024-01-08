@@ -34,7 +34,7 @@ const routes: Routes = [
     component: HistorialCalificacionesComponent,
   },
   {
-    path: 'solicitudes/incisos',
+    path: 'solicitudes/incisos/:id',
     component: IncisosArancelariosComponent,
   }
 ];

@@ -25,6 +25,8 @@ import {NgClass} from '@angular/common';
 import {SolicitudDialogComponent} from "../componentes/dialogs/solicitud-dialog/solicitud-dialog.component";
 import {SolicitudService} from "@core/service/solicitud.service";
 import {ExpedienteModel} from "@core/models/expediente.model";
+import {Direction} from "@angular/cdk/bidi";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-realizar-solicitudes',
@@ -69,7 +71,8 @@ export class RealizarSolicitudesComponent extends UnsubscribeOnDestroyAdapter im
     private   snackBar: MatSnackBar,
     private   authenticationService: AuthService,
     public    dialog: MatDialog,
-    private   _expedienteService: SolicitudService
+    private   _expedienteService: SolicitudService,
+    private router: Router
   ) {
     super();
   }
@@ -90,11 +93,24 @@ export class RealizarSolicitudesComponent extends UnsubscribeOnDestroyAdapter im
   }
 
   detailsCall(row: ItemsModel) {
-    this.dialog.open(SolicitudDialogComponent, {
+    let tempDirection: Direction;
+    if (localStorage.getItem('isRtl') === 'true') {
+      tempDirection = 'rtl';
+    } else {
+      tempDirection = 'ltr';
+    }
+
+    const dialogRef = this.dialog.open(SolicitudDialogComponent, {
       data: {
         items: row
       },
       width: '50%',
+      disableClose: true,
+      direction: tempDirection,
+    });
+
+    this.subs.sink = dialogRef.afterClosed().subscribe((result) => {
+      this.router.navigate(['/disercomi/solicitudes/incisos/', result])
     });
   }
 
@@ -204,7 +220,7 @@ export class DataSourceFetch extends DataSource<ItemsModel> {
     ];
 
     this.apiDataBase.getSolicitudes('C03')
-    this._ExpedienteService.getExpedientesPorUsuario(65)
+    this._ExpedienteService.getExpedientesPorUsuario(this.selectedRole.idUsuario)
     return merge(...displayDataChanges).pipe(
       map(() => {
         this.expedienteUsuario = this._ExpedienteService.ExpedientesUsuario
@@ -230,31 +246,46 @@ export class DataSourceFetch extends DataSource<ItemsModel> {
         /**
           Inicio del filtro para verificar Fase 1 y Fase 2
          **/
-        const expedienteEnProceso = this.expedienteUsuario.some((expediente) => {
-          return (expediente.idTipoExpediente === 'TE01' || expediente.idTipoExpediente === 'TE02') && expediente.idEstado === 'EB00';
+        const expedienteEnProcesoTE01 = this.expedienteUsuario.some((expediente) => {
+          return (expediente.idTipoExpediente === 'TE01' );
         });
 
-        if (expedienteEnProceso) {
-          // Excluir elementos con expedientes en proceso (TE01 o TE02 en estado EB00)
+
+        const expedienteEnProcesoTE02 = this.expedienteUsuario.some((e) => {
+          return (e.idTipoExpediente === 'TE02');
+        })
+
+        if (expedienteEnProcesoTE01) {
           this.filteredData = this.filteredData.filter((itemsModel: ItemsModel) => {
             return !this.expedienteUsuario.some((expediente) => {
               return (
-                (expediente.idTipoExpediente === 'TE01' || expediente.idTipoExpediente === 'TE02') &&
-                expediente.idEstado === 'EB00' &&
+                (expediente.idTipoExpediente === 'TE01' ) &&
                 itemsModel.idItem === expediente.idTipoExpediente
               );
             });
           });
         } else {
-          // Mostrar todos los elementos si no hay expedientes en proceso
           this.filteredData = this.filteredData.slice();
         }
 
-        this.filteredData = this.filteredData.filter((itemsModel: ItemsModel) => {
-          return !this.expedienteUsuario.some((expediente) => {
-            return expediente.idTipoExpediente === 'TE01' && expediente.idEstado !== 'EB00' && itemsModel.idItem === expediente.idTipoExpediente;
+      if(expedienteEnProcesoTE02) {
+          this.filteredData = this.filteredData.filter((itemsModel: ItemsModel) => {
+            return !this.expedienteUsuario.some((expediente) => {
+              return (
+                (expediente.idTipoExpediente === 'TE02') &&
+                itemsModel.idItem === expediente.idTipoExpediente
+              );
+            });
           });
-        });
+        }else {
+        this.filteredData = this.filteredData.slice();
+      }
+
+        // this.filteredData = this.filteredData.filter((itemsModel: ItemsModel) => {
+        //   return !this.expedienteUsuario.some((expediente) => {
+        //     return expediente.idTipoExpediente === 'TE01' && expediente.idEstado !== 'EB00' && itemsModel.idItem === expediente.idTipoExpediente;
+        //   });
+        // });
 
 
 

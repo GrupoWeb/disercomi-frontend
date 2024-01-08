@@ -60,7 +60,7 @@ export class SolicitudDialogComponent implements OnInit{
       .subscribe({
         next: (d) => {
           this.showNotification('snackbar-success','Solicitud iniciada con éxito','top','center')
-          console.log("Expediente " + d.idExpediente)
+          this.dialogRef.close(d.idExpediente)
         }
       })
   }

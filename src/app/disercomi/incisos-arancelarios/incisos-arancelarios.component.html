@@ -47,7 +47,7 @@
                     <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
                       <mat-form-field class="example-full-width" appearance="outline">
                         <mat-label>Área a ocupar (metros²)</mat-label>
-                        <input matInput formControlName="areaOcupada" required>
+                        <input matInput formControlName="areaOcupada" required type="number">
                         <mat-icon class="material-icons-two-tone color-icon p-3" matSuffix>open_with</mat-icon>
                       </mat-form-field>
                     </div>
@@ -97,14 +97,14 @@
                           <mat-cell *matCellDef="let row">{{row.idIncisoArancelario}}</mat-cell>
                         </ng-container>
 
-                        <ng-container matColumnDef="descripcion">
+                        <ng-container matColumnDef="descripcionInciso">
                           <mat-header-cell *matHeaderCellDef mat-sort-header  [ngStyle]="{ 'background-color': color, 'font-size': '16px', 'color': 'white' }">Descripción</mat-header-cell>
-                          <mat-cell *matCellDef="let row">{{row.descripcion}}</mat-cell>
+                          <mat-cell *matCellDef="let row">{{row.descripcionInciso}}</mat-cell>
                         </ng-container>
 
-                        <ng-container matColumnDef="nombre">
+                        <ng-container matColumnDef="nombreComercial">
                           <mat-header-cell *matHeaderCellDef mat-sort-header  [ngStyle]="{ 'background-color': color, 'font-size': '16px', 'color': 'white' }">Nombre Comercial</mat-header-cell>
-                          <mat-cell *matCellDef="let row">{{row.nombre}}</mat-cell>
+                          <mat-cell *matCellDef="let row">{{row.nombreComercial}}</mat-cell>
                         </ng-container>
 
                         <ng-container matColumnDef="cantidad">
@@ -165,7 +165,6 @@
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </section>

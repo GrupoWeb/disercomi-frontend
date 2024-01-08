@@ -55,7 +55,11 @@ export class IncisoDetalleComponent implements OnInit{
     idIncisoArancelario: '',
     descripcion: '',
     nombre: '',
-    cantidad: 0
+    cantidad: 0,
+    idAnexo: '',
+    idTipoAnexo: '',
+    descripcionInciso: '',
+    nombreComercial: '',
   });
 
 
@@ -85,7 +89,7 @@ export class IncisoDetalleComponent implements OnInit{
 
   confirmAdd() {
 
-    this.itemInciso.nombre = this.detalleForm.value.nombre
+    this.itemInciso.nombreComercial = this.detalleForm.value.nombre
     this.itemInciso.cantidad = this.detalleForm.value.cantidad
     this.itemInciso.idIncisoArancelario = this.data.idIncisoArancelario
     this.itemInciso.descripcion = this.data.descripcion

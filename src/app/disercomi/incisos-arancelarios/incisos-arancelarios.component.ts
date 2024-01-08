@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatIconModule} from "@angular/material/icon";
 import {MatTabsModule} from "@angular/material/tabs";
 import {BreadcrumbComponent} from "@shared/components/breadcrumb/breadcrumb.component";
@@ -24,6 +24,9 @@ import {Direction} from "@angular/cdk/bidi";
 import {MatDialog} from "@angular/material/dialog";
 import {IncisoDialogComponent} from "../componentes/dialogs/inciso-dialog/inciso-dialog.component";
 import {IncisosModel} from "@core/models/incisos.model";
+import {IncisosService} from "@core/service/incisos.service";
+import {ActivatedRoute} from "@angular/router";
+import {Subscription} from "rxjs";
 
 
 @Component({
@@ -51,12 +54,12 @@ import {IncisosModel} from "@core/models/incisos.model";
   templateUrl: './incisos-arancelarios.component.html',
   styleUrl: './incisos-arancelarios.component.scss'
 })
-export class IncisosArancelariosComponent extends UnsubscribeOnDestroyAdapter implements OnInit {
+export class IncisosArancelariosComponent extends UnsubscribeOnDestroyAdapter implements OnInit, OnDestroy {
 
   displayedColumns = [
     'idIncisoArancelario',
-    'descripcion',
-    'nombre',
+    'descripcionInciso',
+    'nombreComercial',
     'cantidad',
     'actions'
   ];
@@ -66,7 +69,9 @@ export class IncisosArancelariosComponent extends UnsubscribeOnDestroyAdapter im
   incisoTemporal!: IncisoTemporalModel;
   itempsTemporalInciso: IncisosModel[] = [];
   itemCatalogo!: ItemsModel[];
-  color: string
+  color: string;
+  idExpedienteRouter!: number;
+  incisosSubscription!: Subscription;
 
 
   constructor(
@@ -75,6 +80,8 @@ export class IncisosArancelariosComponent extends UnsubscribeOnDestroyAdapter im
     public  apiDataBase: FileService,
     private authService: AuthService,
     public  dialog: MatDialog,
+    private incisosService: IncisosService,
+    private route: ActivatedRoute
   ) {
     super();
     const blackObject = {} as ExpedienteModel;
@@ -85,6 +92,10 @@ export class IncisosArancelariosComponent extends UnsubscribeOnDestroyAdapter im
     this.incisoTemporal = new IncisoTemporalModel(blackObjectInciso)
     this.temporalForm = this.createFormTemporal()
     this.color =  '#1484C9'
+    this.route.params.subscribe(params => {
+      this.idExpedienteRouter = params['id'];
+    });
+
   }
 
   createFormInciso(): UntypedFormGroup {
@@ -127,6 +138,27 @@ export class IncisosArancelariosComponent extends UnsubscribeOnDestroyAdapter im
   ngOnInit(): void {
     this.getItemsClasificacion();
     this.getRepresentantes()
+    this.getIncisos()
+    this.incisosSubscription = this.incisosService.getIncisosUpdated().subscribe(() => {
+      this.getIncisos()
+    });
+
+  }
+
+  override ngOnDestroy() {
+    // Desuscribirse al destruir el componente
+    if (this.incisosSubscription) {
+      this.incisosSubscription.unsubscribe();
+    }
+  }
+
+  getIncisos(){
+    this.incisosService.getIncisosExpediente(this.idExpedienteRouter,'TAN4')
+      .subscribe({
+        next: (d) => {
+          this.itempsTemporalInciso = d
+        }
+      })
   }
 
   addNew(){
@@ -147,9 +179,7 @@ export class IncisosArancelariosComponent extends UnsubscribeOnDestroyAdapter im
     });
 
     this.subs.sink = dialogRef.afterClosed().subscribe((r) => {
-      console.log("Data " + JSON.stringify(r))
-      this.itempsTemporalInciso = [...this.itempsTemporalInciso, ...r];
-
+      this.incisosService.setIncisosSolicitud(this.idExpedienteRouter,'TAN4', r)
     });
   }
 
