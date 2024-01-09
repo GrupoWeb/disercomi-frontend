@@ -24,6 +24,7 @@ import {HttpClient} from "@angular/common/http";
 import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material/snack-bar";
 import {MatDialog} from "@angular/material/dialog";
 import {SolicitudDialogComponent} from "../componentes/dialogs/solicitud-dialog/solicitud-dialog.component";
+import {SolicitudService} from "@core/service/solicitud.service";
 
 @Component({
   selector: 'app-historial-solicitudes',
@@ -68,6 +69,7 @@ export class HistorialSolicitudesComponent extends UnsubscribeOnDestroyAdapter i
     private   snackBar: MatSnackBar,
     private   authenticationService: AuthService,
     public    dialog: MatDialog,
+    private   _solicitudService: SolicitudService
   ) {
     super();
     this.formatoFecha = "dd/MM/yyyy h:mm a"
@@ -160,6 +162,14 @@ export class HistorialSolicitudesComponent extends UnsubscribeOnDestroyAdapter i
   transformarEstado(_historialModel: HistorialModel): string {
     const estadoEncontrado = this.itemsList.find(estado => _historialModel.idEstado === estado.idItem);
     return estadoEncontrado ? estadoEncontrado.detalle.cssColor : "secondary";
+  }
+
+  downloadBoleta(row: HistorialModel) {
+    this._solicitudService.getBoletaFile(row.idExpediente).subscribe({
+      next: (r) => {
+        this.tableServiceService.downloadBoletas(r.bytes)
+      }
+    })
   }
 
 }

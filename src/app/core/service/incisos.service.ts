@@ -33,8 +33,6 @@ export class IncisosService extends UnsubscribeOnDestroyAdapter {
     return this.dataAnexos.asObservable();
   }
 
-
-
   getIncisos() {
     this.subs.sink =  this.http
       .get<IncisosModel[]>(`${environment.apiUrl}/incisos-arancelarios`)
@@ -55,7 +53,7 @@ export class IncisosService extends UnsubscribeOnDestroyAdapter {
       });
   }
 
-getIncisosExpediente(idSolicitud: number, tipoAnexo: string): Observable<IncisosModel[]>{
+  getIncisosExpediente(idSolicitud: number, tipoAnexo: string): Observable<IncisosModel[]>{
   return this.http
     .get<IncisosModel[]>(`${environment.apiUrl}/solicitudes/${idSolicitud}/anexos/${tipoAnexo}`)
     .pipe(

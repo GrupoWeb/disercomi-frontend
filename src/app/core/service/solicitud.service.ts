@@ -1,16 +1,23 @@
 import {UnsubscribeOnDestroyAdapter} from "@shared";
 import {Injectable} from "@angular/core";
-import {BehaviorSubject, Observable, map, Subject} from "rxjs";
+import {BehaviorSubject, catchError, Observable, Subject, throwError} from "rxjs";
 import {ExpedienteModel} from "@core/models/expediente.model";
-import {HttpClient, HttpResponse} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
 
 
-export interface dataFiles{
+export interface dataFiles {
   estadoSolicitud: string,
   mensaje: string,
   faltantes: []
   archivoBytes: string
+}
+
+export interface dataBoleta {
+  nombre: string,
+  tipo: string,
+  extension: string,
+  bytes: string
 }
 
 @Injectable({providedIn: 'root'})
@@ -66,5 +73,15 @@ export class SolicitudService extends UnsubscribeOnDestroyAdapter {
   setCompletarExpediente(idExpediente: number) {
     return this.http
       .get<dataFiles>(`${environment.apiUrl}/solicitudes/${idExpediente}/completar`)
+  }
+
+  getBoletaFile(idExpediente: number): Observable<dataBoleta>{
+    return  this.http
+      .get<dataBoleta>(`${environment.apiUrl}/boletas/descargar/${idExpediente}`)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          return throwError(error);
+        })
+      )
   }
 }

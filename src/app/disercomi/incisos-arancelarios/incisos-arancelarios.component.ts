@@ -29,8 +29,6 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {Subscription} from "rxjs";
 import {SolicitudService} from "@core/service/solicitud.service";
 
-
-
 @Component({
   selector: 'app-incisos-arancelarios',
   standalone: true,
@@ -192,7 +190,7 @@ export class IncisosArancelariosComponent extends UnsubscribeOnDestroyAdapter im
     this._solicitudService.setCompletarExpediente(this.idExpedienteRouter)
       .subscribe({
         next: (r) => {
-          let bytesArray = this.apiDataBase.blobPdfFromBase64(r.archivoBytes)
+          const bytesArray = this.apiDataBase.blobPdfFromBase64(r.archivoBytes)
           if (bytesArray) {
             this.apiDataBase.downloadBoletas(bytesArray)
             this.router.navigate(['/disercomi/solicitudes/historial'])
@@ -200,5 +198,6 @@ export class IncisosArancelariosComponent extends UnsubscribeOnDestroyAdapter im
         }
       })
   }
+
 
 }
