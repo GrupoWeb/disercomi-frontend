@@ -168,6 +168,7 @@ export class HistorialSolicitudesComponent extends UnsubscribeOnDestroyAdapter i
     this._solicitudService.getBoletaFile(row.idExpediente).subscribe({
       next: (r) => {
         this.tableServiceService.downloadBoletas(r.bytes)
+
       }
     })
   }
