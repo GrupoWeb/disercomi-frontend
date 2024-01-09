@@ -244,50 +244,45 @@ export class DataSourceFetch extends DataSource<ItemsModel> {
           });
 
         /**
-          Inicio del filtro para verificar Fase 1 y Fase 2
+          * Inicio del filtro para verificar Fase 1 y Fase 2
          **/
         const expedienteEnProcesoTE01 = this.expedienteUsuario.some((expediente) => {
           return (expediente.idTipoExpediente === 'TE01' );
         });
 
-
         const expedienteEnProcesoTE02 = this.expedienteUsuario.some((e) => {
           return (e.idTipoExpediente === 'TE02');
         })
 
-        if (expedienteEnProcesoTE01) {
+
+        if (!expedienteEnProcesoTE01 && !expedienteEnProcesoTE02) {
           this.filteredData = this.filteredData.filter((itemsModel: ItemsModel) => {
-            return !this.expedienteUsuario.some((expediente) => {
+            return itemsModel.idItem === 'TE01';
+          });
+        } else if (!expedienteEnProcesoTE01 && expedienteEnProcesoTE02){
+          this.filteredData = this.filteredData.filter((itemsModel: ItemsModel) => {
+            return this.expedienteUsuario.some((expediente) => {
               return (
-                (expediente.idTipoExpediente === 'TE01' ) &&
+                expediente.idTipoExpediente === 'TE02' &&
                 itemsModel.idItem === expediente.idTipoExpediente
               );
             });
+          });
+        } else if (expedienteEnProcesoTE01 && !expedienteEnProcesoTE02) {
+          this.filteredData = this.filteredData.filter((itemsModel: ItemsModel) => {
+            return itemsModel.idItem === 'TE02';
           });
         } else {
-          this.filteredData = this.filteredData.slice();
-        }
-
-      if(expedienteEnProcesoTE02) {
           this.filteredData = this.filteredData.filter((itemsModel: ItemsModel) => {
             return !this.expedienteUsuario.some((expediente) => {
               return (
-                (expediente.idTipoExpediente === 'TE02') &&
+                ((expediente.idTipoExpediente === 'TE01') ||
+                  (expediente.idTipoExpediente === 'TE02')) &&
                 itemsModel.idItem === expediente.idTipoExpediente
               );
             });
           });
-        }else {
-        this.filteredData = this.filteredData.slice();
-      }
-
-        // this.filteredData = this.filteredData.filter((itemsModel: ItemsModel) => {
-        //   return !this.expedienteUsuario.some((expediente) => {
-        //     return expediente.idTipoExpediente === 'TE01' && expediente.idEstado !== 'EB00' && itemsModel.idItem === expediente.idTipoExpediente;
-        //   });
-        // });
-
-
+        }
 
         const sortedData = this.sortData(this.filteredData.slice());
         const startIndex = this.paginator.pageIndex * this.paginator.pageSize;

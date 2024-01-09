@@ -25,8 +25,10 @@ import {MatDialog} from "@angular/material/dialog";
 import {IncisoDialogComponent} from "../componentes/dialogs/inciso-dialog/inciso-dialog.component";
 import {IncisosModel} from "@core/models/incisos.model";
 import {IncisosService} from "@core/service/incisos.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {Subscription} from "rxjs";
+import {SolicitudService} from "@core/service/solicitud.service";
+
 
 
 @Component({
@@ -81,7 +83,9 @@ export class IncisosArancelariosComponent extends UnsubscribeOnDestroyAdapter im
     private authService: AuthService,
     public  dialog: MatDialog,
     private incisosService: IncisosService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router,
+    private _solicitudService: SolicitudService
   ) {
     super();
     const blackObject = {} as ExpedienteModel;
@@ -102,7 +106,7 @@ export class IncisosArancelariosComponent extends UnsubscribeOnDestroyAdapter im
     return this.fb.group({
       clasificacionEconomica: [this.expedienteItems.clasificacionEconomica, Validators.required],
       representanteLegal: [this.expedienteItems.representanteLegal, Validators.required],
-      areaOcupada: [this.expedienteItems.areaAsignada, Validators.required],
+      areaAsignada: [this.expedienteItems.areaAsignada, Validators.required],
       nombreEmpresa: [this.expedienteItems.nombreEmpresa, Validators.required],
       actividadEconomica: [this.expedienteItems.actividadEconomica, Validators.required],
       domicilioFiscal: [this.expedienteItems.domicilioFiscal, Validators.required],
@@ -181,6 +185,20 @@ export class IncisosArancelariosComponent extends UnsubscribeOnDestroyAdapter im
     this.subs.sink = dialogRef.afterClosed().subscribe((r) => {
       this.incisosService.setIncisosSolicitud(this.idExpedienteRouter,'TAN4', r)
     });
+  }
+
+  setExpediente() {
+    this._solicitudService.setExpedienteCompleto(this.idExpedienteRouter, this.incisoForm?.getRawValue())
+    this._solicitudService.setCompletarExpediente(this.idExpedienteRouter)
+      .subscribe({
+        next: (r) => {
+          let bytesArray = this.apiDataBase.blobPdfFromBase64(r.archivoBytes)
+          if (bytesArray) {
+            this.apiDataBase.downloadBoletas(bytesArray)
+            this.router.navigate(['/disercomi/solicitudes/historial'])
+          }
+        }
+      })
   }
 
 }

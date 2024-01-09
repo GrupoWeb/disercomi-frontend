@@ -47,7 +47,7 @@
                     <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
                       <mat-form-field class="example-full-width" appearance="outline">
                         <mat-label>Área a ocupar (metros²)</mat-label>
-                        <input matInput formControlName="areaOcupada" required type="number">
+                        <input matInput formControlName="areaAsignada" required type="number">
                         <mat-icon class="material-icons-two-tone color-icon p-3" matSuffix>open_with</mat-icon>
                       </mat-form-field>
                     </div>
@@ -86,7 +86,7 @@
                 <br>
                 <div class="text-end">
                   <button mat-raised-button class="btn-space" color="primary" (click)="addNew()">Agregar</button>
-                  <button mat-raised-button class="btn-space" color="primary" [disabled]="!incisoForm.valid">Completar Solicitud</button>
+                  <button mat-raised-button class="btn-space" color="primary" [disabled]="!incisoForm.valid" (click)="setExpediente()">Completar Solicitud</button>
                 </div>
                 <div class="card mt-5">
                   <div class="body overflow-auto">

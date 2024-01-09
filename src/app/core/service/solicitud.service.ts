@@ -1,10 +1,17 @@
 import {UnsubscribeOnDestroyAdapter} from "@shared";
 import {Injectable} from "@angular/core";
-import {BehaviorSubject, Observable, map} from "rxjs";
+import {BehaviorSubject, Observable, map, Subject} from "rxjs";
 import {ExpedienteModel} from "@core/models/expediente.model";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpResponse} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
 
+
+export interface dataFiles{
+  estadoSolicitud: string,
+  mensaje: string,
+  faltantes: []
+  archivoBytes: string
+}
 
 @Injectable({providedIn: 'root'})
 export class SolicitudService extends UnsubscribeOnDestroyAdapter {
@@ -12,7 +19,7 @@ export class SolicitudService extends UnsubscribeOnDestroyAdapter {
   isTblLoading = true;
   itemsSolicitud: BehaviorSubject<ExpedienteModel[]> = new BehaviorSubject<ExpedienteModel[]>([]);
   currentExpediente: BehaviorSubject<ExpedienteModel[]> = new BehaviorSubject<ExpedienteModel[]>([])
-
+  private dataExpediente = new Subject<void>();
 
   constructor(
     private http: HttpClient,
@@ -46,5 +53,18 @@ export class SolicitudService extends UnsubscribeOnDestroyAdapter {
           this.currentExpediente.next(d)
         }
       })
+  }
+
+  setExpedienteCompleto(idExpediente: number, data: ExpedienteModel){
+    return this.http
+      .put<ExpedienteModel>(`${environment.apiUrl}/expedientes/${idExpediente}`, data)
+      .subscribe(() => {
+        this.dataExpediente.next()
+      })
+  }
+
+  setCompletarExpediente(idExpediente: number) {
+    return this.http
+      .get<dataFiles>(`${environment.apiUrl}/solicitudes/${idExpediente}/completar`)
   }
 }

@@ -71,6 +71,40 @@ export class FileService extends UnsubscribeOnDestroyAdapter {
       })
   }
 
+  blobPdfFromBase64(baseString: string) {
+    try {
+      const bytes = Uint8Array.from(
+        atob(baseString)
+          .split('')
+          .map(c => c.charCodeAt(0))
+      )
+      return bytes;
+    }catch (e) {
+      console.error(e);
+    }
+
+    return null;
+  }
+
+  downloadBoletas(arrayString: any) {
+    let bodyBoleta = {
+      "nombreTipoArchivo": "Boleta de pago",
+      "extension": "pdf",
+      "tipoContenido": "application/pdf",
+    }
+    const blob = new Blob([arrayString], { type: bodyBoleta.tipoContenido });
+    const url = URL.createObjectURL(blob);
+    const nombre = `${bodyBoleta.nombreTipoArchivo}.${bodyBoleta.extension}`;
+
+    const linkDescarga = document.createElement("a");
+    linkDescarga.href = url;
+    linkDescarga.download = nombre;
+
+    const evento = new MouseEvent("click", { view: window, bubbles: true, cancelable: false });
+    linkDescarga.dispatchEvent(evento);
+
+  }
+
   downloadFile(response: HttpResponse<Blob>, filename: string): void {
     const blob = response.body;
 
