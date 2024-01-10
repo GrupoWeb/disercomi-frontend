@@ -7,6 +7,7 @@ import {DocumentTable} from "@core/models/TablesModels/document-table.model";
 import {ItemsModel} from "@core/models/Items.model";
 import {AuthService} from "@core";
 import {HistorialModel} from "@core/models/historial.model";
+import {Messsages} from "@core/models/messsages";
 
 @Injectable({
   providedIn: 'root',
@@ -86,15 +87,14 @@ export class FileService extends UnsubscribeOnDestroyAdapter {
     return null;
   }
 
-  downloadBoletas(arrayString: any) {
+  downloadBoletas(arrayString: any, nombreBoleta: string) {
     let bodyBoleta = {
-      "nombreTipoArchivo": "Boleta de pago",
-      "extension": "pdf",
+      "nombreTipoArchivo": `${nombreBoleta}`,
       "tipoContenido": "application/pdf",
     }
     const blob = new Blob([arrayString], { type: bodyBoleta.tipoContenido });
     const url = URL.createObjectURL(blob);
-    const nombre = `${bodyBoleta.nombreTipoArchivo}.${bodyBoleta.extension}`;
+    const nombre = `${bodyBoleta.nombreTipoArchivo}`;
 
     const linkDescarga = document.createElement("a");
     linkDescarga.href = url;
@@ -119,6 +119,16 @@ export class FileService extends UnsubscribeOnDestroyAdapter {
   setFileDocument(formData: FormData): Observable<any> {
     return this.http
       .post<any>(`${environment.apiUrl}/archivos`,formData)
+  }
+
+  setFileBoleta(formData: FormData, idExpediente: number): Observable<Messsages>{
+    return this.http
+      .post<Messsages>(`${environment.apiUrl}/expedientes/${idExpediente}/documentos`,formData)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          return throwError(error);
+        })
+      );
   }
 
   DeleteFile(idFile: number): Observable<any>{

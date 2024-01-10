@@ -16,10 +16,10 @@
   clear: both;
 }
 
-/* -------------------------------- 
-      
-      Main components 
-      
+/* --------------------------------
+
+      Main components
+
       -------------------------------- */
 header {
   height: 200px;
@@ -577,7 +577,7 @@ header h1 {
     position: relative;
     &:first-child {
       .left-icon {
-        background: #fff;
+        background: #4caf50;
         color: #666;
       }
       .left-time span.large {
@@ -666,6 +666,7 @@ header h1 {
       }
     }
     .left-icon {
+      background: #9e9e9e;
       width: 40px;
       height: 40px;
       speak: none;

@@ -1,0 +1,32 @@
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+  <div class="card">
+    <div class="header">
+      <h2>
+        <strong>Historial de la Solicitud </strong>
+      </h2>
+    </div>
+    <div class="body">
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <ul class="left-timeline">
+              <li *ngFor="let item of itemsTrazabilidad">
+                <time class="left-time" datetime="2017-11-04T18:30">
+                  <span>{{ item.fechaHoraAdicion }}</span>
+                  <span class="large">{{ item.idEstado }}</span>
+                </time>
+                <div class="left-icon"></div>
+                <div class="left-label">
+                  Responsable:
+                  <h2><strong>{{ item.usuarioAdicion }}</strong></h2>
+                  Estado:
+                  <h2><strong>{{ item.nombreEstado }}</strong></h2>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

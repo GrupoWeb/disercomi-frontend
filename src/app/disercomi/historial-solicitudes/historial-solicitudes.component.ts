@@ -25,6 +25,9 @@ import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition}
 import {MatDialog} from "@angular/material/dialog";
 import {SolicitudDialogComponent} from "../componentes/dialogs/solicitud-dialog/solicitud-dialog.component";
 import {SolicitudService} from "@core/service/solicitud.service";
+import {TrazabilidadDialogComponent} from "../componentes/dialogs/trazabilidad-dialog/trazabilidad-dialog.component";
+import {Direction} from "@angular/cdk/bidi";
+import {CargarBoletaDialogComponent} from "../componentes/dialogs/cargar-boleta-dialog/cargar-boleta-dialog.component";
 
 @Component({
   selector: 'app-historial-solicitudes',
@@ -167,8 +170,60 @@ export class HistorialSolicitudesComponent extends UnsubscribeOnDestroyAdapter i
   downloadBoleta(row: HistorialModel) {
     this._solicitudService.getBoletaFile(row.idExpediente).subscribe({
       next: (r) => {
-        this.tableServiceService.downloadBoletas(r.bytes)
+        const bytesArray = this.tableServiceService.blobPdfFromBase64(r.bytes)
+        if (bytesArray) {
+          this.tableServiceService.downloadBoletas(bytesArray, r.nombre)
+        }
+      }
+    })
+  }
 
+  historialExpediente(row: HistorialModel) {
+    this._solicitudService.getTrazabilidad(row.idExpediente).subscribe({
+      next: (r) => {
+        let tempDirection: Direction;
+        if (localStorage.getItem('isRtl') === 'true') {
+          tempDirection = 'rtl';
+        } else {
+          tempDirection = 'ltr';
+        }
+        const dialogRef = this.dialog.open(TrazabilidadDialogComponent, {
+          data: {
+            items: r
+          },
+          width: '50%',
+          disableClose: false,
+          direction: tempDirection,
+        })
+      }
+    })
+  }
+
+  cargarBoleta(row: HistorialModel) {
+    let tempDirection: Direction;
+    if (localStorage.getItem('isRtl') === 'true') {
+      tempDirection = 'rtl';
+    } else {
+      tempDirection = 'ltr';
+    }
+
+    const dialogRef = this.dialog.open(CargarBoletaDialogComponent, {
+      data: {
+        idExpediente: row.idExpediente
+      },
+      width: '30%',
+      disableClose: false,
+      direction: tempDirection,
+    })
+
+    this.subs.sink = dialogRef.afterClosed().subscribe((r) => {
+      if (r === 1) {
+        this.showNotification(
+          'snackbar-success',
+          'Documento Cargado, con exito!',
+          'bottom',
+          'center'
+        );
       }
     })
   }

@@ -4,6 +4,8 @@ import {BehaviorSubject, catchError, Observable, Subject, throwError} from "rxjs
 import {ExpedienteModel} from "@core/models/expediente.model";
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
+import {TrazabilidadModel} from "@core/models/trazabilidad.model";
+import { dataBoleta } from "@core/models/dataBoleta";
 
 
 export interface dataFiles {
@@ -13,12 +15,7 @@ export interface dataFiles {
   archivoBytes: string
 }
 
-export interface dataBoleta {
-  nombre: string,
-  tipo: string,
-  extension: string,
-  bytes: string
-}
+
 
 @Injectable({providedIn: 'root'})
 export class SolicitudService extends UnsubscribeOnDestroyAdapter {
@@ -83,5 +80,16 @@ export class SolicitudService extends UnsubscribeOnDestroyAdapter {
           return throwError(error);
         })
       )
+  }
+
+  getTrazabilidad(idExpediente: number): Observable<TrazabilidadModel[]> {
+    return this.http
+      .get<TrazabilidadModel[]>(`${environment.apiUrl}/expedientes/${idExpediente}/trazabilidades`)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          return throwError(error);
+        })
+      )
+
   }
 }

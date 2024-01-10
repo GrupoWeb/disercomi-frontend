@@ -192,7 +192,7 @@ export class IncisosArancelariosComponent extends UnsubscribeOnDestroyAdapter im
         next: (r) => {
           const bytesArray = this.apiDataBase.blobPdfFromBase64(r.archivoBytes)
           if (bytesArray) {
-            this.apiDataBase.downloadBoletas(bytesArray)
+            this.apiDataBase.downloadBoletas(bytesArray, 'BOLETA_PAGO.pdf')
             this.router.navigate(['/disercomi/solicitudes/historial'])
           }
         }
