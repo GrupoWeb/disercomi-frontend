@@ -28,6 +28,7 @@ import {SolicitudService} from "@core/service/solicitud.service";
 import {TrazabilidadDialogComponent} from "../componentes/dialogs/trazabilidad-dialog/trazabilidad-dialog.component";
 import {Direction} from "@angular/cdk/bidi";
 import {CargarBoletaDialogComponent} from "../componentes/dialogs/cargar-boleta-dialog/cargar-boleta-dialog.component";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-historial-solicitudes',
@@ -72,7 +73,8 @@ export class HistorialSolicitudesComponent extends UnsubscribeOnDestroyAdapter i
     private   snackBar: MatSnackBar,
     private   authenticationService: AuthService,
     public    dialog: MatDialog,
-    private   _solicitudService: SolicitudService
+    private   _solicitudService: SolicitudService,
+    private router: Router
   ) {
     super();
     this.formatoFecha = "dd/MM/yyyy h:mm a"
@@ -111,6 +113,10 @@ export class HistorialSolicitudesComponent extends UnsubscribeOnDestroyAdapter i
     )
 
   }
+
+  transformarNombre(row: HistorialModel) {
+    return row.idEstado != 'EB00'? 'Ver' :'Completar';
+  }
   showNotification(
     colorName: string,
     text: string,
@@ -125,13 +131,8 @@ export class HistorialSolicitudesComponent extends UnsubscribeOnDestroyAdapter i
     });
   }
 
-  detailsCall(row: ItemsModel) {
-    this.dialog.open(SolicitudDialogComponent, {
-      data: {
-        items: row
-      },
-      width: '50%',
-    });
+  detailsCall(row: HistorialModel) {
+    this.router.navigate(['/disercomi/solicitudes/incisos/', row.idExpediente])
   }
 
   exportExcel() {

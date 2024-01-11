@@ -72,6 +72,7 @@ export class IncisosArancelariosComponent extends UnsubscribeOnDestroyAdapter im
   color: string;
   idExpedienteRouter!: number;
   incisosSubscription!: Subscription;
+  filteredItems!: ItemsModel[];
 
 
   constructor(
@@ -144,6 +145,7 @@ export class IncisosArancelariosComponent extends UnsubscribeOnDestroyAdapter im
     this.incisosSubscription = this.incisosService.getIncisosUpdated().subscribe(() => {
       this.getIncisos()
     });
+    this.getExpediente(this.idExpedienteRouter)
 
   }
 
@@ -199,5 +201,18 @@ export class IncisosArancelariosComponent extends UnsubscribeOnDestroyAdapter im
       })
   }
 
-
+  getExpediente(idExpediente: number){
+    this._solicitudService.getExpediente(idExpediente).subscribe({
+      next: (r) => {
+        this.incisoForm.patchValue({
+          clasificacionEconomica: r.idItem,
+          representanteLegal: r.representanteLegal,
+          areaAsignada: r.areaAsignada,
+          nombreEmpresa: r.nombreEmpresa,
+          actividadEconomica: r.actividadEconomica,
+          domicilioFiscal: r.domicilioFiscal,
+        })
+      }
+    })
+  }
 }

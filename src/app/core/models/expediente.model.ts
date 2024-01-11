@@ -19,6 +19,12 @@ export class ExpedienteModel {
   idTipoExpediente: string;
   idUsuario: number;
   usuarioAsignacion: number;
+  dictamenFirmado: boolean;
+  dictamenGenerado: boolean;
+  providenciaFirmada: boolean;
+  providenciaGenerada: boolean;
+  resolucionGenerada: boolean;
+  idItem: string;
 
 
   constructor(expedienteModel: ExpedienteModel) {
@@ -41,5 +47,11 @@ export class ExpedienteModel {
     this.nombreUsuario = expedienteModel.nombreUsuario;
     this.nombreTipoExpediente = expedienteModel.nombreTipoExpediente;
     this.nitUsuario = expedienteModel.nitUsuario;
+    this.dictamenFirmado = expedienteModel.dictamenFirmado;
+    this.dictamenGenerado = expedienteModel.dictamenGenerado;
+    this.providenciaFirmada = expedienteModel.providenciaFirmada;
+    this.providenciaGenerada = expedienteModel.providenciaGenerada;
+    this.resolucionGenerada = expedienteModel.resolucionGenerada;
+    this.idItem = expedienteModel.idItem;
   }
 }

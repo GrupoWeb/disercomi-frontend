@@ -12,22 +12,15 @@
               404
             </span>
             <span class="error-subheader p-b-5">
-              Looks Like You're Lost
+              NO TIENES PERMITIDO ESTA ACCIÓN
             </span>
             <span class="error-subheader2 p-b-5">
-              The Page You Are Looking For Not Available!
+              ¡La página que estás buscando no está disponible!
             </span>
             <div class="container-auth-form-btn mt-5">
-              <button mat-raised-button color="primary" class="auth-form-btn" type="submit">
-                Go To Home Page
+              <button mat-raised-button color="primary" class="auth-form-btn" type="submit" (click)="returnInicio()">
+                Ir a la página de inicio
               </button>
-            </div>
-            <div class="w-full p-t-15 p-b-15 text-center">
-              <div>
-                <a routerLink="/authentication/signin" class="txt1">
-                  Need Help?
-                </a>
-              </div>
             </div>
           </form>
         </div>

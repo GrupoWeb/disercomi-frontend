@@ -94,7 +94,22 @@ export class SidebarComponent implements OnInit, OnDestroy {
         this.authService.currentUserValue.lastName;
       this.userImg = this.authService.currentUserValue.img;
       this.userType = 'Admin';
-      this.sidebarItems = ROUTES.filter((sidebarItem) => sidebarItem);
+      // this.sidebarItems = ROUTES.filter((sidebarItem) => sidebarItem);
+      const userRoles = this.authService.currentProfileUserValue.idRol;
+      this.sidebarItems = ROUTES.filter((sidebarItem) => {
+        if (!sidebarItem.allowedRoles || sidebarItem.allowedRoles.length === 0) {
+          return true;
+        }
+        const allowedRolesArray = Array.isArray(sidebarItem.allowedRoles)
+          ? sidebarItem.allowedRoles
+          : [sidebarItem.allowedRoles];
+
+        const hasIntersection = allowedRolesArray.some(role => userRoles.includes(role));
+
+        return hasIntersection;
+
+      });
+
     }
 
     // this.sidebarItems = ROUTES.filter((sidebarItem) => sidebarItem);

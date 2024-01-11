@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 @Component({
@@ -14,7 +14,13 @@ import { FormsModule } from '@angular/forms';
     ],
 })
 export class Page404Component {
-  constructor() {
+  constructor(
+    private router: Router,
+  ) {
     // constructor
+  }
+
+  returnInicio(){
+    this.router.navigate(['/disercomi/perfil'])
   }
 }

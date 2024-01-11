@@ -12,6 +12,7 @@ export const ROUTES: RouteInfo[] = [
     badge: '',
     badgeClass: '',
     submenu: [],
+    allowedRoles: ['RU08'],
   },
   {
     path: 'disercomi/perfil',
@@ -23,6 +24,7 @@ export const ROUTES: RouteInfo[] = [
     badge: '',
     badgeClass: '',
     submenu: [],
+    allowedRoles: ['RU08'],
   },
   {
     path: 'disercomi/documentos',
@@ -34,6 +36,7 @@ export const ROUTES: RouteInfo[] = [
     badge: '',
     badgeClass: '',
     submenu: [],
+    allowedRoles: ['RU07','RU08'],
   },
   {
     path: '',
@@ -79,6 +82,7 @@ export const ROUTES: RouteInfo[] = [
         submenu: [],
       },
     ],
+    allowedRoles: ['RU07','RU08'],
   },
   {
     path: '',
@@ -102,5 +106,6 @@ export const ROUTES: RouteInfo[] = [
         submenu: [],
       }
     ],
+    allowedRoles: ['RU07','RU08'],
   },
 ];

@@ -7,6 +7,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import {mergeMap} from "rxjs/operators";
+import {forkJoin, Observable} from "rxjs";
 @Component({
     selector: 'app-signin',
     templateUrl: './signin.component.html',
@@ -56,44 +58,44 @@ export class SigninComponent
 
   }
 
-  getUsers(email: string){
-    this.authService.getUsuarios(false, email)
-      .subscribe()
+  getUsers(email: string): Observable<any>{
+    return this.authService.getUsuarios(false, email)
   }
 
   onSubmit() {
     this.submitted = true;
     this.loading = true;
     this.error = '';
+
     if (this.authForm.invalid) {
       this.error = '¡Nombre de usuario y contraseña no válidos!';
       return;
-    } else {
-      this.subs.sink = this.authService
-        .login(this.f['username'].value, this.f['password'].value)
-        .subscribe({
-          next: (res) => {
-            if (res) {
-              if (res) {
-                const token = this.authService.currentUserValue.token;
-                if (token) {
-                  this.setProfileUser()
-                  this.getUsers(this.authService.currentProfileUserValue.correo)
-                  this.router.navigate(['/disercomi/perfil']);
-                }
-              } else {
-                this.error = 'Ingreso invalido';
-              }
-            } else {
-              this.error = 'Ingreso invalido';
-            }
-          },
-          error: (error) => {
-            this.error = error;
-            this.submitted = false;
-            this.loading = false;
-          },
-        });
     }
+
+    const username = this.f['username'].value;
+    const password = this.f['password'].value;
+
+
+      this.subs.sink = this.authService
+        .login(username, password)
+        .pipe(
+          mergeMap(() => {
+            return forkJoin([
+              this.authService.profileUser(),
+              this.getUsers(this.authService.currentProfileUserValue.correo)
+            ]);
+          })
+        )
+        .subscribe({
+      next: ([profileUserRes, usersRes]) => {
+        this.router.navigate(['/disercomi/perfil']);
+      },
+      error: (error) => {
+        this.error = error;
+        this.submitted = false;
+        this.loading = false;
+      },
+    });
+
   }
 }

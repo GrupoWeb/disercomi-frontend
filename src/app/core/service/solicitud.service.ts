@@ -72,6 +72,11 @@ export class SolicitudService extends UnsubscribeOnDestroyAdapter {
       .get<dataFiles>(`${environment.apiUrl}/solicitudes/${idExpediente}/completar`)
   }
 
+  getExpediente(idExpediente: number) : Observable<ExpedienteModel> {
+    return this.http
+    .get<ExpedienteModel>(`${environment.apiUrl}/expedientes/${idExpediente}`)
+  }
+
   getBoletaFile(idExpediente: number): Observable<dataBoleta>{
     return  this.http
       .get<dataBoleta>(`${environment.apiUrl}/boletas/descargar/${idExpediente}`)

@@ -33,6 +33,11 @@ export class AuthService {
     this.currentProfileUsers = this.currentUsersProfile.asObservable();
   }
 
+  isAuthenticated(): boolean {
+    const token = this.currentUserValue;
+    return !!token;
+  }
+
   public get currentUserValue(): User {
     return this.currentUserSubject.value;
   }
@@ -49,7 +54,6 @@ export class AuthService {
 
     return {} as User;
   }
-
 
   login(correo: string, password: string) {
     return this.http

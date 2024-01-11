@@ -68,7 +68,7 @@
                     <mat-menu #menu="matMenu">
                       <button mat-menu-item (click)="detailsCall(row)">
                         <i class="material-icons-two-tone align-middle msr-2">assignment</i>
-                        <span>Completar Solicitud</span>
+                        <span>{{ transformarNombre(row) }} Solicitud</span>
                       </button>
                       <button mat-menu-item (click)="historialExpediente(row)">
                         <i class="material-icons-two-tone align-middle msr-2">restore</i>
